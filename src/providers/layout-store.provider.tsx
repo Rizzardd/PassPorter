@@ -7,7 +7,7 @@ import {
   type LayoutStore,
   createLayoutStore,
   initLayoutStore,
-} from "@/stores/layout.store.ts";
+} from "@/stores/layout.store";
 
 export type LayoutStoreApi = ReturnType<typeof createLayoutStore>;
 
