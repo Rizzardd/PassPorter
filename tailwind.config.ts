@@ -8,6 +8,9 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+	fontFamily: {
+		'display': ['Urbanist'],
+	  },
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',
@@ -49,7 +52,12 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+
+			'dark-purple': '#3F2C5A',
+			'light-purple': '#7E56AD',
+			'light-pink': '#DB94B9',
+			'salmon': '#FEBFAD',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
