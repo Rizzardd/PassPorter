@@ -3,10 +3,10 @@ import AssetFirstBanner from "@/assets/asset-banner-first-section.png";
 
 export default function BannerFirstSection() {
   return (
-    <main className=" justify-items-center">
+    <main>
       <div className="flex w-full h-[90vw] md:h-[80vw] mt-[-23.5vw] ">
-        <div className=" bg-light-purple w-[15%] h-full pt-[23.5vw]">
-          <p className=" font-display rotate-[-90deg] text-[3.60vw] w-[400%] ml-[-150%] mt-[29vw] md:mt-[16.5vw] ">
+        <div className=" bg-light-purple w-[10%] h-full pt-[23.5vw]">
+          <p className=" font-display rotate-[-90deg] text-[3.60vw] w-[700%] ml-[-300%] mt-[24vw] md:mt-[16.5vw] ">
             Adquira seu Ingresso no PassPorter!
           </p>
         </div>
@@ -21,7 +21,6 @@ export default function BannerFirstSection() {
               Participe,
             </h1>
             <h1 className="font-display text-white font-thin text-[4.5vw] w-fit">
-              {" "}
               Celebre!
             </h1>
           </div>
@@ -30,7 +29,11 @@ export default function BannerFirstSection() {
             Conecte-se com amigos, crie <br /> novas memórias e aproveite tudo{" "}
             <br /> o que a sua cidade tem a <br /> oferecer.
           </p>
-          <Image alt="" src={AssetFirstBanner} className="w-[40%] h-[50%] ml-[55%] mt-[-24vw]"/>
+          <Image
+            alt=""
+            src={AssetFirstBanner}
+            className="w-[40%] h-[50%] ml-[55%] mt-[-24vw]"
+          />
         </div>
       </div>
     </main>
