@@ -29,8 +29,8 @@ export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
           </InputElement>
         )}
         {cloneElement(children, {
-          ...(startElement && { ps: "calc(var(--input-height) - 6px)" }),
-          ...(endElement && { pe: "calc(var(--input-height) - 6px)" }),
+          ...(startElement && { ps: "calc(var(--input-height) - 1px)" }),
+          ...(endElement && { pe: "calc(var(--input-height) - 1px)" }),
           ...children.props,
         })}
         {endElement && (
