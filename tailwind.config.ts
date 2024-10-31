@@ -53,11 +53,13 @@ const config: Config = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			},
-
+			'dark-grey': '#1b1b1b',
+			'darkier-purple': '#3D2072',
 			'dark-purple': '#3F2C5A',
 			'light-purple': '#7E56AD',
 			'light-pink': '#DB94B9',
 			'salmon': '#FEBFAD',
+			'orange': '#F68A66',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
