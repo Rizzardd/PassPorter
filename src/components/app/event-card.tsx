@@ -25,7 +25,7 @@ export function EventCard() {
           </p>
         </div>
         <div className="px-2">
-          <h1>cu</h1>
+          <h1>teste</h1>
         </div>
       </Flex>
     </div>
