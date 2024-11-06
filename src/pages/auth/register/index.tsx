@@ -2,10 +2,7 @@ import { IoIosArrowDropleftCircle, IoIosPin } from "react-icons/io";
 import { PasswordInput } from "@/components/ui/password-input"
 import { Button, Fieldset, Input, Stack, Flex } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field";
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from "@/components/ui/native-select";
+
 import { IoLogInOutline } from "react-icons/io5";
 
 export default function Register() {
