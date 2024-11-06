@@ -4,11 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,18 +16,18 @@
   }
 }
 
-
 @font-face {
-  font-family: "Urbanist";
-  src: local("urbanist"),
-    url("../assets/fonts/urbanist.ttf") format("truetype");
+  font-family: 'Urbanist';
+  src:
+    local('urbanist'),
+    url('../assets/fonts/urbanist.ttf') format('truetype');
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
-} 
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
