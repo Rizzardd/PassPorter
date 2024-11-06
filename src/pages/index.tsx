@@ -1,11 +1,10 @@
-import BannerFirstSection from "@/components/app/banner-first-section";
-import { EventCard } from "@/components/app/event-card";
-import { Button } from "@/components/ui/button";
-import { InputGroup } from "@/components/ui/input-group";
-import { Input } from "@chakra-ui/react";
-import { Divide } from "lucide-react";
-import { IoIosColorPalette, IoIosPin } from "react-icons/io";
-
+import BannerFirstSection from '@/components/app/banner-first-section'
+import { EventCard } from '@/components/app/event-card'
+import { Button } from '@/components/ui/button'
+import { InputGroup } from '@/components/ui/input-group'
+import { Input } from '@chakra-ui/react'
+import { GetServerSideProps } from 'next'
+import { IoIosColorPalette, IoIosPin } from 'react-icons/io'
 import {
   IoBalloon,
   IoBaseball,
@@ -14,44 +13,62 @@ import {
   IoGrid,
   IoMusicalNotesSharp,
   IoTicket,
-} from "react-icons/io5";
+} from 'react-icons/io5'
+import { EventCardItem } from '@/core/events/types'
 
 const CardCategory = [
-  { icon: <IoGrid />, name: "Todos" },
-  { icon: <IoIosColorPalette />, name: "Artes" },
-  { icon: <IoBaseball />, name: "Esportes" },
-  { icon: <IoBook />, name: "Acadêmico" },
-  { icon: <IoMusicalNotesSharp />, name: "Música" },
-  { icon: <IoBalloon />, name: "Festival" },
-  { icon: <IoFastFood />, name: "Gastronomia" },
-];
+  { icon: <IoGrid />, name: 'Todos' },
+  { icon: <IoIosColorPalette />, name: 'Artes' },
+  { icon: <IoBaseball />, name: 'Esportes' },
+  { icon: <IoBook />, name: 'Acadêmico' },
+  { icon: <IoMusicalNotesSharp />, name: 'Música' },
+  { icon: <IoBalloon />, name: 'Festival' },
+  { icon: <IoFastFood />, name: 'Gastronomia' },
+]
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/getHighlights`
+  )
+  if (!res.ok) {
+    return { props: { events: null } }
+  }
+
+  const events: EventCardItem[] = await res.json()
+  return { props: { events } }
+}
+
+interface EventsPageProps {
+  events: EventCardItem[] | null
+}
+
+export default function Home({ events }: EventsPageProps) {
+  console.log(events)
   return (
     <div className=" justify-items-center bg-dark-grey h-fit">
       <BannerFirstSection />
       <div className="mt-[-6%] flex flex-col items-center gap-3">
         <InputGroup
-          className="mx-auto  h-fit "
+          className="mx-auto  h-fit"
           startElement={<IoIosPin className="scale-150" />}
-          startElementProps={{ color: "#F68A66" }}
+          startElementProps={{ color: '#F68A66' }}
         >
           <Input
             placeholder="Buscar Local"
             className="bg-white h-[6vh] w-[70vw] font-display"
-            color={"#1b1b1b"}
+            color={'#1b1b1b'}
           ></Input>
         </InputGroup>
 
         <InputGroup
           className="mx-auto h-fit "
           startElement={<IoTicket className="scale-150" />}
-          startElementProps={{ color: "#F68A66" }}
+          startElementProps={{ color: '#F68A66' }}
         >
           <Input
             placeholder="Buscar Evento"
             className="bg-white h-[6vh] w-[70vw] font-display "
-            color={"#1b1b1b"}
+            color={'#1b1b1b'}
           ></Input>
         </InputGroup>
         <Button className="w-[30vw] h-[14vw] bg-orange font-display mt-[6.6%]">
@@ -68,9 +85,17 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="mt-[9.4%] px-5">
-        <EventCard />
+      <div className="mt-10 px-5 gap-10 flex flex-col w-fit mx-auto">
+        {events?.map((e, i) => (
+          <EventCard
+            key={i}
+            id={e.id}
+            name={e.name}
+            date={e.date}
+            image={e.image}
+          />
+        ))}
       </div>
     </div>
-  );
+  )
 }
