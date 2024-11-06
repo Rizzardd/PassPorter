@@ -55,7 +55,7 @@ export default function Home({ events }: EventsPageProps) {
         >
           <Input
             placeholder="Buscar Local"
-            className="bg-white h-[6vh] w-[70vw] font-display"
+            className="bg-white h-12 w-[70vw] font-display"
             color={'#1b1b1b'}
           ></Input>
         </InputGroup>
@@ -67,18 +67,18 @@ export default function Home({ events }: EventsPageProps) {
         >
           <Input
             placeholder="Buscar Evento"
-            className="bg-white h-[6vh] w-[70vw] font-display "
+            className="bg-white h-12 w-[70vw] font-display "
             color={'#1b1b1b'}
           ></Input>
         </InputGroup>
-        <Button className="w-[30vw] h-[14vw] bg-orange font-display mt-[6.6%]">
+        <Button className="px-10 h-12 bg-orange font-display mt-[6.6%]">
           Buscar
         </Button>
       </div>
 
       <div className=" flex flex-wrap gap-2 mt-[9.5%] px-5">
         {CardCategory.map((e, i) => (
-          <Button className="w-fit px-4 h-[12vw] bg-light-purple font-display hover:bg-dark-purple">
+          <Button className="w-fit px-4 h-10 bg-light-purple font-display hover:bg-dark-purple">
             {e.icon}
             {e.name}
           </Button>
