@@ -1,17 +1,18 @@
-import { Flex, Image } from "@chakra-ui/react";
-import React from "react";
-import { Button } from "../ui/button";
-import { Avatar } from "../ui/avatar";
-import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from "../ui/menu";
-import { TbSquareRoundedChevronDownFilled } from "react-icons/tb";
-import { HiOutlinePlus } from "react-icons/hi";
-import { MenuToggleButton } from "./menu-toggle-button";
-import { useRouter } from "next/router";
+import { Flex, Image } from '@chakra-ui/react'
+import React from 'react'
+import { Button } from '../ui/button'
+import { Avatar } from '../ui/avatar'
+import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '../ui/menu'
+import { TbSquareRoundedChevronDownFilled } from 'react-icons/tb'
+import { HiOutlinePlus } from 'react-icons/hi'
+import { MenuToggleButton } from './menu-toggle-button'
+import { useRouter } from 'next/router'
+import useAuthStore from '@/core/users/stores/useAuthStore'
 
 export function AppHeadbar({}: React.PropsWithChildren<{}>) {
-  const navigate = useRouter();
-  const isAuth = navigate.route.includes("/auth");
-
+  const navigate = useRouter()
+  const isAuth = navigate.route.includes('/auth')
+  const { isLoggedIn, isLoading, checkAuth } = useAuthStore()
   return (
     <div>
       {!isAuth ? (
@@ -59,25 +60,36 @@ export function AppHeadbar({}: React.PropsWithChildren<{}>) {
               >
                 Criar Eventos
               </Button>
-              <MenuRoot>
-                <MenuTrigger asChild className="mr-[1rem]">
-                  <Button>
-                    <Avatar src="https://avatar.iran.liara.run/public" />
-                    <TbSquareRoundedChevronDownFilled />
-                  </Button>
-                </MenuTrigger>
-                <MenuContent>
-                  <MenuItem value="new-txt">New Text File</MenuItem>
-                  <MenuItem value="new-file">New File...</MenuItem>
-                  <MenuItem value="new-win">New Window</MenuItem>
-                  <MenuItem value="open-file">Open File...</MenuItem>
-                  <MenuItem value="export">Export</MenuItem>
-                </MenuContent>
-              </MenuRoot>
+              {isLoggedIn ? (
+                <MenuRoot>
+                  <MenuTrigger asChild className="mr-[1rem]">
+                    <Button>
+                      <Avatar src="https://avatar.iran.liara.run/public" />
+                      <TbSquareRoundedChevronDownFilled />
+                    </Button>
+                  </MenuTrigger>
+                  <MenuContent>
+                    <MenuItem value="new-txt">New Text File</MenuItem>
+                    <MenuItem value="new-file">New File...</MenuItem>
+                    <MenuItem value="new-win">New Window</MenuItem>
+                    <MenuItem value="open-file">Open File...</MenuItem>
+                    <MenuItem value="export">Export</MenuItem>
+                  </MenuContent>
+                </MenuRoot>
+              ) : (
+                <Button
+                  mr={4}
+                  px={6}
+                  className="bg-orange"
+                  onClick={() => navigate.push('/auth/login')}
+                >
+                  Login
+                </Button>
+              )}
             </Flex>
           </Flex>
         </Flex>
       ) : null}
     </div>
-  );
+  )
 }
