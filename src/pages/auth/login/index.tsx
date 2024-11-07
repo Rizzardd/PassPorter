@@ -96,9 +96,9 @@ export default function Login() {
           </p>
         </div>
         <InputGroup
-          className="mx-auto  h-fit  "
+          className="mx-auto  h-fit  group "
           startElement={
-            <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey">
+            <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey group-focus-within:border-white">
               <IoMailOutline className="scale-150" />
             </div>
           }
@@ -107,7 +107,7 @@ export default function Login() {
           <Input
             placeholder="Digite seu E-mail ou Usuário"
             {...register('input')}
-            className="bg-dark-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey  "
+            className="bg-dark-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey group-focus-within:border-white outline-none"
           ></Input>
         </InputGroup>
 
@@ -119,9 +119,9 @@ export default function Login() {
         </div>
 
         <InputGroup
-          className="mx-auto  h-fit  "
+          className="mx-auto  h-fit group "
           startElement={
-            <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey ">
+            <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey group-focus-within:border-white">
               <IoIosPin className="scale-150" />
             </div>
           }
@@ -131,7 +131,7 @@ export default function Login() {
             type="password"
             {...register('password')}
             placeholder="Digite sua Senha"
-            className="bg-dark-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey "
+            className="bg-dark-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey group-focus-within:border-white outline-none"
           ></Input>
         </InputGroup>
         <Button
