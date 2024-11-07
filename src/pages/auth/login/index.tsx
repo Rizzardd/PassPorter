@@ -8,7 +8,7 @@ import { IoIosPin } from 'react-icons/io'
 import { IoLogInOutline, IoMailOutline, IoTicket } from 'react-icons/io5'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-
+import { useRouter } from 'next/router'
 interface FormData {
   input: string
   password: string
@@ -23,6 +23,7 @@ const schema = yup.object().shape({
 })
 
 export default function Login() {
+  const navigate = useRouter()
   const {
     register,
     handleSubmit,
@@ -56,7 +57,7 @@ export default function Login() {
       }
 
       const result = await response.json()
-      console.log(result.message)
+      navigate.push('/')
     } catch (error) {
       console.error('Login error:', error)
       setErrorMessage('An error occurred during login.')
@@ -145,6 +146,7 @@ export default function Login() {
           </div>
           Cadastrar-se
         </Button>
+        {errorMessage}
       </div>
     </main>
   )

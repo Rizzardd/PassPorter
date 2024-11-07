@@ -43,7 +43,7 @@ interface EventsPageProps {
 }
 
 export default function Home({ events }: EventsPageProps) {
-  console.log(events)
+  events
   return (
     <div className=" justify-items-center bg-dark-grey h-fit">
       <BannerFirstSection />
