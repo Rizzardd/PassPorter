@@ -1,8 +1,8 @@
-import { BookingDetailsCard } from "@/components/app/booking-details-card";
-import BookingDetailsForm from "@/components/app/booking-details-form";
-import { EventCard } from "@/components/app/event-card";
-import { Flex } from "@chakra-ui/react";
-import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { BookingDetailsCard } from '@/components/app/booking-details-card'
+import BookingDetailsForm from '@/components/app/booking-details-form'
+import { EventCard } from '@/components/app/event-card'
+import { Flex } from '@chakra-ui/react'
+import { IoIosArrowDropleftCircle } from 'react-icons/io'
 
 export default function BookingDetails() {
   return (
@@ -38,7 +38,7 @@ export default function BookingDetails() {
             </p>
           </div>
         </div>
-        <div className="bg-dark-grey h-[6vh] w-[90vw] font-display rounded-full mx-auto py-[0.85rem] flex ">
+        <div className="bg-dark-grey h-12 w-[90vw] font-display rounded-full mx-auto py-[0.85rem] flex ">
           <p className="font-display text-white font-thin text-[4.5vw] ml-5">
             Total
           </p>
@@ -49,9 +49,7 @@ export default function BookingDetails() {
         <hr className="my-12 mx-auto h-0.5 border-t-0 w-72 bg-dark-grey" />
 
         <BookingDetailsForm />
-
-      
       </div>
     </main>
-  );
+  )
 }

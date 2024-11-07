@@ -98,7 +98,7 @@ export default function Login() {
         <InputGroup
           className="mx-auto  h-fit  group "
           startElement={
-            <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey group-focus-within:border-white">
+            <div className="h-12 w-12 bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey group-focus-within:border-white">
               <IoMailOutline className="scale-150" />
             </div>
           }
@@ -107,7 +107,7 @@ export default function Login() {
           <Input
             placeholder="Digite seu E-mail ou Usuário"
             {...register('input')}
-            className="bg-dark-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey group-focus-within:border-white outline-none"
+            className="bg-dark-grey h-12 w-[85vw] font-display rounded-full border-2 border-grey group-focus-within:border-white outline-none"
           ></Input>
         </InputGroup>
 
@@ -121,7 +121,7 @@ export default function Login() {
         <InputGroup
           className="mx-auto  h-fit group "
           startElement={
-            <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey group-focus-within:border-white">
+            <div className="h-12 w-12 bg-grey rounded-full flex justify-center items-center -ml-3.5  border-2 border-grey group-focus-within:border-white">
               <IoIosPin className="scale-150" />
             </div>
           }
@@ -131,20 +131,23 @@ export default function Login() {
             type="password"
             {...register('password')}
             placeholder="Digite sua Senha"
-            className="bg-dark-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey group-focus-within:border-white outline-none"
+            className="bg-dark-grey h-12 w-[85vw] font-display rounded-full border-2 border-grey group-focus-within:border-white outline-none"
           ></Input>
         </InputGroup>
         <Button
           onClick={handleSubmit(onSubmit)}
-          className="bg-grey h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey justify-start mt-5 my-2 text-white "
+          className="bg-grey h-12 w-[85vw] font-display rounded-full border-2 border-grey justify-start mt-5 my-2 text-white "
         >
-          <div className="h-[6vh] w-[6vh] bg-light-green rounded-full flex justify-center items-center   border-2 border-light-green">
+          <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center   border-2 border-light-green">
             <IoLogInOutline className="scale-150" />
           </div>
           Entrar
         </Button>
-        <Button className="bg-white h-[6vh] w-[85vw] font-display rounded-full border-2 border-grey justify-start text-grey ">
-          <div className="h-[6vh] w-[6vh] bg-grey rounded-full flex justify-center items-center border-2 border-grey">
+        <Button
+          onClick={() => navigate.push('/auth/register')}
+          className="bg-white h-12 w-[85vw] font-display rounded-full border-2 border-grey justify-start text-grey "
+        >
+          <div className="h-12 w-12 bg-grey rounded-full flex justify-center items-center border-2 border-grey">
             <IoLogInOutline className="scale-150 text-light-green" />
           </div>
           Cadastrar-se

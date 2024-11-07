@@ -1,7 +1,7 @@
-import { PasswordInput } from "@/components/ui/password-input";
-import { Button, Fieldset, Input, Stack, Flex } from "@chakra-ui/react";
-import { Field } from "@/components/ui/field";
-import { IoCheckmark } from "react-icons/io5";
+import { PasswordInput } from '@/components/ui/password-input'
+import { Button, Fieldset, Input, Stack, Flex } from '@chakra-ui/react'
+import { Field } from '@/components/ui/field'
+import { IoCheckmark } from 'react-icons/io5'
 
 export default function BookingDetailsForm() {
   return (
@@ -20,7 +20,7 @@ export default function BookingDetailsForm() {
                 name="email"
                 type="email"
                 placeholder="Digite seu Último Nome"
-                className="bg-dark-grey h-[6vh] w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
               />
             </Field>
 
@@ -28,7 +28,7 @@ export default function BookingDetailsForm() {
               <Input
                 name="firstName"
                 placeholder="Digite seu Usuário"
-                className="bg-dark-grey h-[6vh] w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
               />
             </Field>
           </div>
@@ -38,7 +38,7 @@ export default function BookingDetailsForm() {
               name="email"
               type="email"
               placeholder="Digite seu Último Nome"
-              className="bg-dark-grey h-[6vh] w-[90vw] font-display rounded-full border-2 border-grey  "
+              className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
             />
           </Field>
 
@@ -47,7 +47,7 @@ export default function BookingDetailsForm() {
               name="email"
               type="email"
               placeholder="Digite seu Último Nome"
-              className="bg-dark-grey h-[6vh] w-[90vw] font-display rounded-full border-2 border-grey  "
+              className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
             />
           </Field>
 
@@ -57,7 +57,7 @@ export default function BookingDetailsForm() {
                 name="email"
                 type="email"
                 placeholder="Digite seu Último Nome"
-                className="bg-dark-grey h-[6vh] w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
               />
             </Field>
 
@@ -65,7 +65,7 @@ export default function BookingDetailsForm() {
               <Input
                 name="firstName"
                 placeholder="Digite seu Usuário"
-                className="bg-dark-grey h-[6vh] w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
               />
             </Field>
           </div>
@@ -74,7 +74,7 @@ export default function BookingDetailsForm() {
               name="email"
               type="email"
               placeholder="Digite seu Último Nome"
-              className="bg-dark-grey h-[6vh] w-[90vw] font-display rounded-full border-2 border-grey  "
+              className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
             />
           </Field>
         </Fieldset.Content>
@@ -85,8 +85,8 @@ export default function BookingDetailsForm() {
         </div>
 
         <div className="w-fit flex mx-auto ">
-          <Button className="bg-white h-[6vh] w-[90vw] font-display rounded-full border-2 border-grey justify-start text-grey ">
-          <div className="h-[6vh] w-[6vh] bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
+          <Button className="bg-white h-12 w-[90vw] font-display rounded-full border-2 border-grey justify-start text-grey ">
+            <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
               <IoCheckmark className="scale-150 text-dark-grey" />
             </div>
             Cadastrar-se
@@ -94,5 +94,5 @@ export default function BookingDetailsForm() {
         </div>
       </Fieldset.Root>
     </div>
-  );
+  )
 }

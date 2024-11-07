@@ -1,6 +1,6 @@
-import TicketCard from "@/components/app/ticket-card";
-import { Button } from "@chakra-ui/react";
-import { IoCheckmark } from "react-icons/io5";
+import TicketCard from '@/components/app/ticket-card'
+import { Button } from '@chakra-ui/react'
+import { IoCheckmark } from 'react-icons/io5'
 
 export default function TicketDetails() {
   return (
@@ -19,16 +19,16 @@ export default function TicketDetails() {
 
       <div className="mb-5  w-[300px] mx-auto">
         <div className="w-full flex mx-auto py-5 w ">
-          <Button className="bg-white h-[6vh] w-full font-display rounded-full border-2 border-grey justify-start text-grey ">
-            <div className="h-[6vh] w-[6vh] bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
+          <Button className="bg-white h-12 w-full font-display rounded-full border-2 border-grey justify-start text-grey ">
+            <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
               <IoCheckmark className="scale-150 text-dark-grey" />
             </div>
             Cadastrar-se
           </Button>
         </div>
         <div className="w-full flex mx-auto py-5 w ">
-          <Button className="bg-white h-[6vh] w-full font-display rounded-full border-2 border-grey justify-start text-grey ">
-            <div className="h-[6vh] w-[6vh] bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
+          <Button className="bg-white h-12 w-full font-display rounded-full border-2 border-grey justify-start text-grey ">
+            <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
               <IoCheckmark className="scale-150 text-dark-grey" />
             </div>
             Cadastrar-se
@@ -36,5 +36,5 @@ export default function TicketDetails() {
         </div>
       </div>
     </div>
-  );
+  )
 }
