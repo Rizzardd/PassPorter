@@ -40,12 +40,7 @@ export default async function authenticateUser(
       { expiresIn: process.env.JWT_EXPIRES_IN }
     )
 
-    res.setHeader(
-      'Set-Cookie',
-      `token=${token}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}`
-    )
-
-    return res.status(200).json({ message: 'Login successful' })
+    return res.status(200).json({ token })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Internal server error' })

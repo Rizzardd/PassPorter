@@ -56,7 +56,10 @@ export default function Login() {
         return
       }
 
-      const result = await response.json()
+      const res = await response.json()
+      const token = res.token
+
+      localStorage.setItem('token', token)
       navigate.push('/')
     } catch (error) {
       console.error('Login error:', error)
