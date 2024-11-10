@@ -28,6 +28,10 @@ const validationSchema = yup.object().shape({
       /[!@#$%^&*(),.?":{}|<>]/,
       'Senha deve conter ao menos 1 caractere especial'
     ),
+  passwordConfirmation: yup
+    .string()
+    .oneOf([yup.ref('password')], 'As senhas devem coincidir')
+    .required('Confirmação de senha é obrigatória'),
   phone: yup.object().shape({
     areacode: yup
       .string()
@@ -75,7 +79,7 @@ export default function Register() {
       <div className="w-full flex flex-col items-center px-4">
         <form onSubmit={handleSubmit(onSubmit)} className="max-w-md w-full">
           <Stack className="text-center my-16">
-            <div className="font-display text-white font-semibold text-[48px] leading-none">
+            <div className="font-display text-white font-semibold text-[40px] leading-none">
               Faça seu cadastro <br /> no{' '}
               <span className="text-light-purple">PassPorter</span>
             </div>
@@ -124,7 +128,7 @@ export default function Register() {
                 <div className="flex w-full justify-between gap-3">
                   <Input
                     {...register('phone.areacode')}
-                    placeholder="Código de Área"
+                    placeholder="DDD"
                     className="bg-dark-grey h-12 w-[20%] font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
                   />
                   <Input
@@ -161,9 +165,14 @@ export default function Register() {
 
             <Field label="Confirmar Senha" className="gap-3">
               <PasswordInput
+                {...register('passwordConfirmation')}
                 placeholder="Confirme sua Senha"
+                onChange={() => trigger('passwordConfirmation')}
                 className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
+              <p className="text-red-500">
+                {errors.passwordConfirmation?.message}
+              </p>
             </Field>
           </div>
 
