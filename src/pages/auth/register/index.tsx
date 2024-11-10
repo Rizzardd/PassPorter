@@ -53,7 +53,7 @@ export default function Register() {
     trigger,
   } = useForm({
     resolver: yupResolver(validationSchema),
-    mode: 'onChange',
+    mode: 'onSubmit',
   })
 
   const onSubmit = (data: any) => {
