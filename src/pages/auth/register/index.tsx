@@ -7,6 +7,8 @@ import { IoLogInOutline } from 'react-icons/io5'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Primeiro Nome é obrigatório'),
@@ -46,6 +48,7 @@ const validationSchema = yup.object().shape({
 })
 
 export default function Register() {
+  const navigate = useRouter()
   const {
     register,
     handleSubmit,
@@ -56,8 +59,42 @@ export default function Register() {
     mode: 'onSubmit',
   })
 
-  const onSubmit = (data: any) => {
-    console.log('Form Data:', data)
+  const onSubmit = async (data: any) => {
+    //TODO: @PvtWendy Faça isso ter uma confirmação por e-mail quando possivel
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/registerUser`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: data.name,
+            surname: data.surname,
+            email: data.email,
+            username: data.username,
+            birthDate: data.birthDate,
+            password: data.password,
+            phone: {
+              areacode: data.phone.areacode,
+              number: data.phone.number,
+            },
+          }),
+        }
+      )
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        return
+      }
+
+      const res = await response.json()
+      const token = res.token
+
+      localStorage.setItem('token', token)
+      navigate.push('/')
+    } catch (error) {
+      console.error('Registration error:', error)
+    }
   }
 
   return (
