@@ -4,8 +4,58 @@ import { Button, Fieldset, Input, Stack, Flex } from '@chakra-ui/react'
 import { Field } from '@/components/ui/field'
 
 import { IoLogInOutline } from 'react-icons/io5'
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+const validationSchema = yup.object().shape({
+  name: yup.string().required('Primeiro Nome é obrigatório'),
+  surname: yup.string().required('Último Nome é obrigatório'),
+  email: yup.string().email('E-mail inválido').required('E-mail é obrigatório'),
+  username: yup.string().required('Usuário é obrigatório'),
+  birthDate: yup
+    .date()
+    .required('Data de Nascimento é obrigatória')
+    .max(new Date(), 'Data de Nascimento não pode estar no futuro'),
+  password: yup
+    .string()
+    .required('Senha é obrigatória')
+    .min(8, 'Senha deve ter pelo menos 8 caracteres')
+    .matches(/[0-9]/, 'Senha deve conter ao menos 1 número')
+    .matches(/[A-Z]/, 'Senha deve conter ao menos 1 letra maiúscula')
+    .matches(/[a-z]/, 'Senha deve conter ao menos 1 letra minúscula')
+    .matches(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      'Senha deve conter ao menos 1 caractere especial'
+    ),
+  phone: yup.object().shape({
+    areacode: yup
+      .string()
+      .required('Código de área é obrigatório')
+      .matches(/^[0-9]+$/, 'Código de área deve conter apenas números'),
+    number: yup
+      .string()
+      .required('Número é obrigatório')
+      .matches(/^[0-9]+$/, 'Número deve conter apenas números')
+      .min(8, 'Número deve conter pelo menos 8 dígitos'),
+  }),
+})
 
 export default function Register() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: 'onChange',
+  })
+
+  const onSubmit = (data: any) => {
+    console.log('Form Data:', data)
+  }
+
   return (
     <main className="bg-dark-grey w-full">
       <Flex
@@ -22,112 +72,113 @@ export default function Register() {
         </h1>
       </Flex>
 
-      <div>
-        <Fieldset.Root size="sm" maxW="md" className="">
-          <Stack className="text-center my-[15vw]">
-            <Fieldset.Legend className="font-display text-white font-medium text-[7vw]">
+      <div className="w-full flex flex-col items-center px-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-md w-full">
+          <Stack className="text-center my-16">
+            <div className="font-display text-white font-semibold text-[48px] leading-none">
               Faça seu cadastro <br /> no{' '}
-              <span className="font-display text-light-purple font-medium text-[6vw]">
-                PassPorter
-              </span>
-            </Fieldset.Legend>
+              <span className="text-light-purple">PassPorter</span>
+            </div>
           </Stack>
 
-          <Fieldset.Content className="gap-7 w-fit flex mx-auto">
+          <div className="gap-7 w-fit flex mx-auto flex-col">
             <Field label="Primeiro Nome" className="gap-3">
               <Input
-                name="firstName"
+                {...register('name')}
                 placeholder="Digite seu Primeiro Nome"
-                className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
+              <p className="text-red-500">{errors.name?.message}</p>
             </Field>
 
-            <Field label="Ultimo Nome" className="gap-3">
+            <Field label="Último Nome" className="gap-3">
               <Input
-                name="email"
-                type="email"
+                {...register('surname')}
                 placeholder="Digite seu Último Nome"
-                className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
+              <p className="text-red-500">{errors.surname?.message}</p>
             </Field>
 
             <Field label="Usuário" className="gap-3">
               <Input
-                name="firstName"
+                {...register('username')}
                 placeholder="Digite seu Usuário"
-                className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
+              <p className="text-red-500">{errors.username?.message}</p>
             </Field>
 
-            <div className="flex flex-row gap-9">
-              <Field label="Idade" className="gap-3">
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="Digite seu Último Nome"
-                  className="bg-dark-grey h-12 w-[40vw] font-display rounded-full border-2 border-grey  "
-                />
-              </Field>
+            <Field label="Data de Nascimento" className="gap-3">
+              <Input
+                {...register('birthDate')}
+                type="date"
+                placeholder="Selecione sua Data de Nascimento"
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
+              />
+              <p className="text-red-500">{errors.birthDate?.message}</p>
+            </Field>
 
-              <Field label="Gênero" className="gap-3">
-                <Input
-                  name="firstName"
-                  placeholder="Digite seu Usuário"
-                  className="bg-dark-grey h-12 w-[40vw] font-display rounded-full border-2 border-grey  "
-                />
+            <div className="flex flex-row gap-2 items-center">
+              <Field label="Telefone" className="gap-3 w-full">
+                <div className="flex w-full justify-between gap-3">
+                  <Input
+                    {...register('phone.areacode')}
+                    placeholder="Código de Área"
+                    className="bg-dark-grey h-12 w-[20%] font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
+                  />
+                  <Input
+                    {...register('phone.number')}
+                    placeholder="Número"
+                    className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
+                  />
+                </div>
+                <p className="text-red-500">
+                  {errors.phone?.areacode?.message}
+                </p>
+                <p className="text-red-500">{errors.phone?.number?.message}</p>
               </Field>
             </div>
 
-            <div className="flex flex-row gap-2">
-              <Field label="Telefone" className="gap-3">
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="Digite seu Último Nome"
-                  className="bg-dark-grey h-12 w-[22vw] font-display rounded-full border-2 border-grey  "
-                />
-              </Field>
-
-              <Field label="" className="mt-[7vw]">
-                <Input
-                  name="firstName"
-                  placeholder="Digite seu Usuário"
-                  className="bg-dark-grey h-12 w-[63vw] font-display rounded-full border-2 border-grey  "
-                />
-              </Field>
-            </div>
             <Field label="E-mail" className="gap-3">
               <Input
-                name="email"
+                {...register('email')}
                 type="email"
-                placeholder="Digite seu Último Nome"
-                className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+                placeholder="Digite seu E-mail"
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
+              <p className="text-red-500">{errors.email?.message}</p>
             </Field>
 
             <Field label="Senha" className="gap-3">
               <PasswordInput
+                {...register('password')}
                 placeholder="Digite sua Senha"
-                className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
+              <p className="text-red-500">{errors.password?.message}</p>
             </Field>
+
             <Field label="Confirmar Senha" className="gap-3">
               <PasswordInput
                 placeholder="Confirme sua Senha"
-                className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey focus:border-white outline-none px-4"
               />
             </Field>
-          </Fieldset.Content>
+          </div>
 
-          <div className="w-fit flex mx-auto my-8">
-            <Button className="bg-white h-12 w-[90vw] font-display rounded-full border-2 border-grey justify-start text-grey ">
-              <div className="h-12 w-12 bg-grey rounded-full flex justify-center items-center border-2 border-grey">
-                <IoLogInOutline className="scale-150 text-light-green" />
+          <div className="w-full flex mx-auto my-8">
+            <Button
+              type="submit"
+              className="bg-grey h-12 w-full font-display rounded-full border-2 border-grey justify-start text-white "
+            >
+              <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center border-2 border-grey">
+                <IoLogInOutline className="scale-150 text-grey" />
               </div>
-              Cadastrar-se
+              Finalizar Cadastro
             </Button>
           </div>
-        </Fieldset.Root>
+        </form>
       </div>
     </main>
   )
