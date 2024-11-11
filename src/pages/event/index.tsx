@@ -1,13 +1,39 @@
-import Wallpaper from '@/assets/wallpaper.png'
-import Image from 'next/image'
-import { Flex } from '@chakra-ui/react'
-import { Avatar } from '@/components/ui/avatar'
-import { RiVerifiedBadgeFill } from 'react-icons/ri'
 import { IoIosPin } from 'react-icons/io'
 import TranslucentCard from '@/components/app/translucentcard'
 import EventDetailsCard from '@/components/app/event-details-card'
+import { EventCardItem } from '@/core/events/types'
+import { Button } from '@chakra-ui/react'
+import { IoQrCodeOutline } from 'react-icons/io5'
 
 export default function EventDetails() {
+  const formattedDate = (date: Date) => {
+    const months = [
+      'Jan.',
+      'Feb.',
+      'Mar.',
+      'Abr.',
+      'Mai.',
+      'Jun.',
+      'Jul.',
+      'Ago.',
+      'Set.',
+      'Out.',
+      'Nov.',
+      'Dez.',
+    ]
+
+    const day = date.getDate()
+    const month = months[date.getMonth()]
+    return (
+      <div className="w-ful h-full flex flex-col items-center justify-center">
+        <p className="text-grey font-display font-semibold text-[30px] text-center leading-none">
+          {day}
+          <br />
+          {month}
+        </p>
+      </div>
+    )
+  }
   return (
     <div className="flex flex-col items-center">
       <TranslucentCard />
@@ -51,6 +77,21 @@ export default function EventDetails() {
       <div className="px-5">
         <EventDetailsCard />
       </div>
+      <div className="bg-grey rounded-3xl w-full max-w-[400px] h-[100px] mt-10 items-center flex justify-around mx-5 ">
+        {Array(4)
+          .fill(null)
+          .map((e, i) => (
+            <div className="bg-white w-[80px] h-[80px] rounded-xl ">
+              {formattedDate(new Date())}
+            </div>
+          ))}
+      </div>
+      <Button className="bg-grey h-12 w-full max-w-[400px] mt-10 font-display rounded-full border-2 border-grey justify-start text-white mb-10 mx-5 ">
+        <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center  border-light-green">
+          <IoQrCodeOutline className="scale-125 text-dark-grey" />
+        </div>
+        Mostrar QR Code
+      </Button>
     </div>
   )
 }
