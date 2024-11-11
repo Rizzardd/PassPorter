@@ -22,7 +22,6 @@ export default function EventDetailsCard() {
           bg="#303030"
           h="100px"
           alignItems="center"
-          backdropFilter="saturate(180%) blur(20px)"
           className="rounded-3xl"
         >
           <div className="px-4">
