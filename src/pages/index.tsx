@@ -15,6 +15,9 @@ import {
   IoTicket,
 } from 'react-icons/io5'
 import { EventCardItem } from '@/core/events/types'
+import { useScreenWidth } from '@/hooks/useScreenWidth'
+import { useEffect, useState } from 'react'
+import { cn } from '@/lib/utils'
 
 const CardCategory = [
   { icon: <IoGrid />, name: 'Todos' },
@@ -43,7 +46,14 @@ interface EventsPageProps {
 }
 
 export default function Home({ events }: EventsPageProps) {
-  events
+  const [cols, setCols] = useState(1)
+  const screen = useScreenWidth()
+
+  useEffect(() => {
+    const updateCols = () => setCols(Math.max(1, Math.floor(screen! / 400)))
+    updateCols()
+  }, [screen])
+
   return (
     <div className=" justify-items-center bg-dark-grey h-fit">
       <BannerFirstSection />
@@ -85,7 +95,12 @@ export default function Home({ events }: EventsPageProps) {
         ))}
       </div>
 
-      <div className="mt-10 px-5 gap-10 flex flex-col w-fit mx-auto">
+      <div
+        className="mt-10 px-5 gap-10 grid mx-auto"
+        style={{
+          gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+        }}
+      >
         {events?.map((e, i) => (
           <EventCard
             key={i}
