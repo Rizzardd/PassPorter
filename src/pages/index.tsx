@@ -17,7 +17,6 @@ import {
 import { EventCardItem } from '@/core/events/types'
 import { useScreenWidth } from '@/hooks/useScreenWidth'
 import { useEffect, useState } from 'react'
-import { cn } from '@/lib/utils'
 import { useRouter } from 'next/router'
 
 const CardCategory = [
