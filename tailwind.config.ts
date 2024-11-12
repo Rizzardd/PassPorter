@@ -60,9 +60,11 @@ const config: Config = {
         'dark-purple': '#3F2C5A',
         'light-purple': '#7E56AD',
         'light-pink': '#DB94B9',
+        'lime-green': '#D4F676',
         salmon: '#FEBFAD',
         orange: '#F68A66',
         'light-green': '#B3D654',
+        'dark-green': '#93AF48',
       },
       borderRadius: {
         lg: 'var(--radius)',
