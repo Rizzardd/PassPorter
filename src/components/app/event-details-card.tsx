@@ -4,11 +4,12 @@ import { EventCardItem } from '@/core/events/types'
 import { IoIosRemoveCircle, IoMdAddCircle } from 'react-icons/io'
 import cardimage from '../../assets/eventcardimage.png'
 
-export default function EventDetailsCard() {
+export default function EventDetailsCard(event: EventCardItem) {
   return (
-    <div className="max-w-[400px] relative">
+    <div className="max-w-[400px] w-full relative">
       <Image
-        src={cardimage}
+        loader={() => event.image}
+        src={event.image}
         alt=""
         width={100}
         height={100}
@@ -29,7 +30,7 @@ export default function EventDetailsCard() {
               Preço Unico
             </h1>
             <p className="font-semibold font-display text-[15px]">
-              Palestra sobre Virtual Reality
+              {event.name}
             </p>
           </div>
           <div className="flex px-10">

@@ -1,6 +1,8 @@
+import { ObjectId } from 'mongodb'
+
 export interface EventCardItem {
-  id: string;
-  date: Date;
-  name: string;
-  image: string;
+  _id: ObjectId
+  date: Date
+  name: string
+  image: string
 }

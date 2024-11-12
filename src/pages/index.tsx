@@ -18,6 +18,7 @@ import { EventCardItem } from '@/core/events/types'
 import { useScreenWidth } from '@/hooks/useScreenWidth'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/router'
 
 const CardCategory = [
   { icon: <IoGrid />, name: 'Todos' },
@@ -48,7 +49,7 @@ interface EventsPageProps {
 export default function Home({ events }: EventsPageProps) {
   const [cols, setCols] = useState(1)
   const screen = useScreenWidth()
-
+  const navigate = useRouter()
   useEffect(() => {
     const updateCols = () => setCols(Math.max(1, Math.floor(screen! / 400)))
     updateCols()
@@ -102,13 +103,15 @@ export default function Home({ events }: EventsPageProps) {
         }}
       >
         {events?.map((e, i) => (
-          <EventCard
-            key={i}
-            id={e.id}
-            name={e.name}
-            date={e.date}
-            image={e.image}
-          />
+          <span onClick={() => navigate.push(`/event/${e._id}`)}>
+            <EventCard
+              key={i}
+              _id={e._id}
+              name={e.name}
+              date={e.date}
+              image={e.image}
+            />
+          </span>
         ))}
       </div>
     </div>
