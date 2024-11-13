@@ -17,7 +17,6 @@ export default function OrganizerProfile() {
     { icon: <IoSettings />, name: 'Configurações' },
     { icon: <IoFolder />, name: 'Meus Eventos' },
   ]
-
   return (
     <div className="flex flex-col items-center">
       <TranslucentCard />
@@ -62,7 +61,7 @@ export default function OrganizerProfile() {
         </div>
         <div className="mt-10 px-5 gap-10 grid mx-auto">
           <EventCard
-            _id={new ObjectId()}
+            _id={'test'}
             name={'a'}
             date={new Date()}
             image={
