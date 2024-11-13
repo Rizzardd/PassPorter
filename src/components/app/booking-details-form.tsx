@@ -5,30 +5,30 @@ import { IoCheckmark } from 'react-icons/io5'
 
 export default function BookingDetailsForm() {
   return (
-    <div className="mt-[-1rem]">
-      <Fieldset.Root size="sm" maxW="md" className="">
+    <div className="mt-[-1rem] w-full">
+      <Fieldset.Root className="w-full">
         <Stack className="text-center mb-8">
           <Fieldset.Legend className="font-display text-white font-normal text-[17px]">
             Informe seus dados para concluir o pedido
           </Fieldset.Legend>
         </Stack>
 
-        <Fieldset.Content className="gap-7 w-fit flex mx-auto">
+        <Fieldset.Content className="gap-7 w-full flex">
           <div className="w-full flex flex-row justify-between">
-            <Field label="Primeiro Nome" className="gap-3">
+            <Field label="Primeiro Nome" className="gap-3 w-[47.5%]">
               <Input
                 name="email"
                 type="email"
                 placeholder="Digite seu Último Nome"
-                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
               />
             </Field>
 
-            <Field label="Ultimo Nome" className="gap-3">
+            <Field label="Ultimo Nome" className="gap-3 w-[47.5%]">
               <Input
                 name="firstName"
                 placeholder="Digite seu Usuário"
-                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
               />
             </Field>
           </div>
@@ -38,7 +38,7 @@ export default function BookingDetailsForm() {
               name="email"
               type="email"
               placeholder="Digite seu Último Nome"
-              className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+              className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
             />
           </Field>
 
@@ -47,25 +47,25 @@ export default function BookingDetailsForm() {
               name="email"
               type="email"
               placeholder="Digite seu Último Nome"
-              className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+              className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
             />
           </Field>
 
           <div className="w-full flex flex-row justify-between">
-            <Field label="Cidade" className="gap-3">
+            <Field label="Cidade" className="gap-3 w-[47.5%]">
               <Input
                 name="email"
                 type="email"
                 placeholder="Digite seu Último Nome"
-                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
               />
             </Field>
 
-            <Field label="Estado" className="gap-3">
+            <Field label="Estado" className="gap-3 w-[47.5%]">
               <Input
                 name="firstName"
                 placeholder="Digite seu Usuário"
-                className="bg-dark-grey h-12 w-[42vw] font-display rounded-full border-2 border-grey  "
+                className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
               />
             </Field>
           </div>
@@ -74,7 +74,7 @@ export default function BookingDetailsForm() {
               name="email"
               type="email"
               placeholder="Digite seu Último Nome"
-              className="bg-dark-grey h-12 w-[90vw] font-display rounded-full border-2 border-grey  "
+              className="bg-dark-grey h-12 w-full font-display rounded-full border-2 border-grey  "
             />
           </Field>
         </Fieldset.Content>
@@ -85,7 +85,7 @@ export default function BookingDetailsForm() {
         </div>
 
         <div className="w-fit flex mx-auto ">
-          <Button className="bg-white h-12 w-[90vw] font-display rounded-full border-2 border-grey justify-start text-grey ">
+          <Button className="bg-white h-12 w-full font-display rounded-full border-2 border-grey justify-start text-grey ">
             <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center border-2 border-light-green">
               <IoCheckmark className="scale-150 text-dark-grey" />
             </div>

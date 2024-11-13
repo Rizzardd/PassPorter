@@ -1,14 +1,14 @@
 import { IoIosPin } from 'react-icons/io'
 import TranslucentCard from '@/components/app/translucentcard'
 import EventDetailsCard from '@/components/app/event-details-card'
-import { EventCardItem } from '@/core/events/types'
+import { EventCardItem, EventItem } from '@/core/events/types'
 import { Button } from '@chakra-ui/react'
 import { IoQrCodeOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 
 interface EventPageProps {
-  event: EventCardItem
+  event: EventItem
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -21,12 +21,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: { event: null } }
   }
 
-  const event: EventCardItem = await res.json()
+  const event: EventItem = await res.json()
   return { props: { event } }
 }
 
 export default function EventDetails({ event }: EventPageProps) {
   console.log(event)
+  const navigate = useRouter()
   const formattedDate = () => {
     const date = new Date(event.date)
     const months = [
@@ -64,12 +65,12 @@ export default function EventDetails({ event }: EventPageProps) {
       <div className=" bg-dark-grey w-full h-full rounded-t-3xl px-5 py-4  flex ">
         <div className="flex flex-col">
           <div className="rounded-t-lg bg-light-purple w-[60px] h-[30px] flex text-center items-center">
-            <p className="font-display text-white font-normal text-[15px] p-4">
+            <p className="font-display text-white font-normal text-[15px] mx-auto">
               {date.month}
             </p>
           </div>
           <div className="bg-white rounded-b-lg  w-[60px] h-[30px] flex text-center items-center">
-            <p className="font-display text-black font-bold text-[20px] p-[1.20rem]">
+            <p className="font-display text-black font-bold text-[20px] mx-auto ">
               {date.day}
             </p>
           </div>
@@ -88,8 +89,7 @@ export default function EventDetails({ event }: EventPageProps) {
       </div>
       <div className="flex px-5">
         <p className=" font-normal font-display text-light-grey ml-1 text-[18px] py-5">
-          Venha de encontro conosco nesta jornada sobre Realidade Virtual!
-          teremos participações dos maiores especialistas na área, não perca!
+          {event.description}
         </p>
 
         <div>
@@ -105,11 +105,14 @@ export default function EventDetails({ event }: EventPageProps) {
           image={event.image}
         />
       </div>
-      <Button className="bg-grey h-12 w-full max-w-[400px] mt-10 font-display rounded-full border-2 border-grey justify-start text-white mb-10 mx-5 ">
+      <Button
+        className="bg-grey h-12 w-full max-w-[400px] mt-10 font-display rounded-full border-2 border-grey justify-start text-white mb-10 mx-5"
+        onClick={() => navigate.push(`/event/${event._id}/booking`)}
+      >
         <div className="h-12 w-12 bg-light-green rounded-full flex justify-center items-center  border-light-green">
           <IoQrCodeOutline className="scale-125 text-dark-grey" />
         </div>
-        Mostrar QR Code
+        Adquirir Ingresso
       </Button>
     </div>
   )

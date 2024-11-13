@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { EventCardItem } from '@/core/events/types'
+import { EventCardItem, EventItem } from '@/core/events/types'
 import clientPromise from '@/lib/mongodb'
 import { ObjectId } from 'mongodb'
 
 export default async function getEventById(
   req: NextApiRequest,
-  res: NextApiResponse<EventCardItem | { message: string }>
+  res: NextApiResponse<EventItem | { message: string }>
 ) {
   const { id } = req.query
 
@@ -17,7 +17,7 @@ export default async function getEventById(
     const client = await clientPromise
     const db = client.db('passporter-test')
     const event = await db
-      .collection<EventCardItem>('events')
+      .collection<EventItem>('events')
       .findOne({ _id: new ObjectId(id) })
 
     if (!event) {
