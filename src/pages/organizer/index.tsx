@@ -2,6 +2,7 @@ import { EventCard } from '@/components/app/event-card'
 import SocialMedia from '@/components/app/socialmedia'
 import TranslucentCard from '@/components/app/translucentcard'
 import { Button } from '@/components/ui/button'
+import { ObjectId } from 'mongodb'
 import {
   IoBarChart,
   IoCalendar,
@@ -61,7 +62,7 @@ export default function OrganizerProfile() {
         </div>
         <div className="mt-10 px-5 gap-10 grid mx-auto">
           <EventCard
-            id={'1'}
+            _id={new ObjectId()}
             name={'a'}
             date={new Date()}
             image={
