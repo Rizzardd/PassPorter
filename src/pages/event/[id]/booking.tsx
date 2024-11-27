@@ -3,6 +3,7 @@ import BookingDetailsForm from '@/components/app/booking-details-form'
 import { EventCard } from '@/components/app/event-card'
 import { EventItem, EventCardItem } from '@/core/events/types'
 import { Flex } from '@chakra-ui/react'
+import dayjs from 'dayjs'
 import { GetServerSideProps } from 'next'
 import { IoIosArrowDropleftCircle } from 'react-icons/io'
 
@@ -30,9 +31,9 @@ export default function BookingDetails({ event }: EventPageProps) {
       <div className="w-full h-full ">
         <BookingDetailsCard
           _id={event._id}
-          image={event.image}
+          imageUrl={event.imageUrl!}
           name={event.name}
-          date={event.date}
+          date={dayjs(event.date).toDate()}
         />
         <div className="px-4 w-[90%] mx-auto">
           <h1 className="font-display text-white font-medium text-[30px] mb-5">

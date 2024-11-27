@@ -6,6 +6,7 @@ import { Button } from '@chakra-ui/react'
 import { IoQrCodeOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
+import dayjs from 'dayjs'
 
 interface EventPageProps {
   event: EventItem
@@ -100,9 +101,9 @@ export default function EventDetails({ event }: EventPageProps) {
       <div className="px-5 w-full flex justify-center items-center">
         <EventDetailsCard
           _id={event._id}
-          date={event.date}
+          date={dayjs(event.date).toDate()}
           name={event.name}
-          image={event.image}
+          imageUrl={event.imageUrl!}
         />
       </div>
       <Button

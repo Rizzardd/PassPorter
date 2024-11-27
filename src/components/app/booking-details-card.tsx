@@ -26,8 +26,8 @@ export function BookingDetailsCard(event: EventCardItem) {
     <div className=" w-[90%] h-[90%] mx-auto relative">
       <Image
         alt=""
-        loader={() => event.image}
-        src={event.image}
+        loader={() => event.imageUrl}
+        src={event.imageUrl}
         width={100}
         height={100}
         className="w-full aspect-[16/11] object-cover rounded-3xl"

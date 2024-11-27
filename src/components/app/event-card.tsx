@@ -42,7 +42,7 @@ export function EventCard(event: EventCardItem) {
         height={100}
         unoptimized
         className="w-full aspect-[16/11] object-cover rounded-3xl "
-      />
+    />
 
       <div className="absolute bottom-0 w-full">
         <Flex

@@ -64,7 +64,7 @@ export default function OrganizerProfile() {
             _id={'test'}
             name={'a'}
             date={new Date()}
-            image={
+            imageUrl={
               'https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2023/02/jupiter_nasa.jpg?w=1200&h=675&crop=1'
             }
           />

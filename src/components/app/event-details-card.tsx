@@ -8,8 +8,8 @@ export default function EventDetailsCard(event: EventCardItem) {
   return (
     <div className="max-w-[400px] w-full relative">
       <Image
-        loader={() => event.image}
-        src={event.image}
+        loader={() => event.imageUrl}
+        src={event.imageUrl}
         alt=""
         width={100}
         height={100}
