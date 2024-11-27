@@ -8,7 +8,10 @@ import AppSidebar from '@/components/app/app-sidebar'
 import useAuthStore from '@/core/users/stores/useAuthStore'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { Toaster } from '@/components/ui/toaster'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+const queryClient = new QueryClient()
 const protectedRoutes = ['/booking/booking-details']
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
@@ -32,13 +35,13 @@ export default function App({ Component, pageProps }: AppProps) {
     return <div>Loading...</div>
   }
   return (
-    <Provider>
-      <LayoutStoreProvider>
-        <Flex direction="column">
-          <AppHeadbar />
-          <AppSidebar>
-            <div>
-              <Flex
+    <QueryClientProvider client={queryClient}>
+      <Provider>
+        <LayoutStoreProvider>
+          <Flex direction="column">
+            <AppHeadbar />
+            <AppSidebar>
+              {/* <Flex
                 h="20"
                 alignItems="center"
                 mx="8"
@@ -52,12 +55,13 @@ export default function App({ Component, pageProps }: AppProps) {
                 >
                   Logo
                 </Text>
-              </Flex>
-            </div>
-          </AppSidebar>
-          <Component {...pageProps} />
-        </Flex>
-      </LayoutStoreProvider>
-    </Provider>
+              </Flex> */}
+            </AppSidebar>
+            <Component {...pageProps} />
+          </Flex>
+          <Toaster />
+        </LayoutStoreProvider>
+      </Provider>
+    </QueryClientProvider>
   )
 }

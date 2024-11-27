@@ -7,6 +7,9 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
+  width: 100dvw;
+  height: 100dvh;
+  overflow-y: auto;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,17 +19,13 @@
   }
 }
 
-@font-face {
-  font-family: 'Urbanist';
-  src:
-    local('urbanist'),
-    url('../assets/fonts/urbanist.ttf') format('truetype');
-}
-
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  width: 100dvw;
+  height: 100dvh;
+  overflow-y: auto;
 }
 @layer base {
   :root {

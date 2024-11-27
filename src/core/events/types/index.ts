@@ -1,15 +1,15 @@
 import { ObjectId } from 'mongodb'
 
 export interface EventCardItem {
-  _id: ObjectId
+  _id: ObjectId | string
   date: Date
   name: string
   image: string
 }
 
 export interface EventItem {
-  _id: ObjectId
-  date: Date
+  _id: ObjectId | string
+  date: Date | string
   name: string
   image: string
   description: string

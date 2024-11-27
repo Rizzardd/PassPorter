@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { jwtDecode, JwtPayload } from 'jwt-decode'
+import { getCookie } from 'cookies-next'
 
 interface User {
   userId: string
@@ -30,7 +31,7 @@ const useAuthStore = create<AuthStore>((set) => ({
   isLoading: true,
 
   checkAuth: () => {
-    const token = localStorage.getItem('token')
+    const token = getCookie('jwt:access_token')?.toString()
     if (token) {
       try {
         const decoded = jwtDecode<DecodedToken>(token)

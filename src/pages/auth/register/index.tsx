@@ -2,6 +2,7 @@ import { IoIosArrowDropleftCircle, IoIosPin } from 'react-icons/io'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Button, Fieldset, Input, Stack, Flex } from '@chakra-ui/react'
 import { Field } from '@/components/ui/field'
+import { toaster } from '@/components/ui/toaster'
 
 import { IoLogInOutline } from 'react-icons/io5'
 import * as yup from 'yup'
@@ -62,28 +63,29 @@ export default function Register() {
   const onSubmit = async (data: any) => {
     //TODO: @PvtWendy Faça isso ter uma confirmação por e-mail quando possivel
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/registerUser`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: data.name,
-            surname: data.surname,
-            email: data.email,
-            username: data.username,
-            birthDate: data.birthDate,
-            password: data.password,
-            phone: {
-              areacode: data.phone.areacode,
-              number: data.phone.number,
-            },
-          }),
-        }
-      )
+      const response = await fetch(`/api/users/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: data.name,
+          surname: data.surname,
+          email: data.email,
+          username: data.username,
+          birthDate: data.birthDate,
+          password: data.password,
+          phone: {
+            areacode: data.phone.areacode,
+            number: data.phone.number,
+          },
+        }),
+      })
 
       if (!response.ok) {
         const errorData = await response.json()
+        console.log(errorData.message || 'Registration failed')
+        toaster.error({
+          title: errorData.message || 'Registration failed',
+        })
         return
       }
 
@@ -107,7 +109,11 @@ export default function Register() {
         justify="center"
         backdropFilter="saturate(180%) blur(9px)"
       >
-        <IoIosArrowDropleftCircle className="text-grey w-[25%] h-[60%] ml-[-50%]" />
+        <IoIosArrowDropleftCircle
+          cursor="pointer"
+          onClick={() => navigate.replace('/auth/login')}
+          className="text-grey w-[25%] h-[60%] ml-[-50%]"
+        />
         <h1 className="font-display text-white font-medium text-[6vw]">
           Cadastro
         </h1>

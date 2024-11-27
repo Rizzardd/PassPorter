@@ -1,95 +1,149 @@
 import { Flex, Image } from '@chakra-ui/react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Button } from '../ui/button'
 import { Avatar } from '../ui/avatar'
 import { MenuContent, MenuItem, MenuRoot, MenuTrigger } from '../ui/menu'
 import { TbSquareRoundedChevronDownFilled } from 'react-icons/tb'
-import { HiOutlinePlus } from 'react-icons/hi'
+import logoImage from '@/assets/logo.png'
 import { MenuToggleButton } from './menu-toggle-button'
-import { useRouter } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import useAuthStore from '@/core/users/stores/useAuthStore'
+import stringToColor from 'string-to-color'
+import fontColorContrast from 'font-color-contrast'
+import qs from 'query-string'
+import { useQuery } from '@tanstack/react-query'
+import ky from 'ky'
+import { User } from '@/core/users/types'
+import NextImage from 'next/image'
+import { deleteCookie } from 'cookies-next'
+import Link from 'next/link'
 
 export function AppHeadbar({}: React.PropsWithChildren<{}>) {
   const navigate = useRouter()
   const isAuth = navigate.route.includes('/auth')
-  const { isLoggedIn, isLoading, checkAuth } = useAuthStore()
+  if (isAuth) return null
+  return <AppBarContent />
+}
+
+function AppBarContent() {
+  const navigate = useRouter()
+
+  const { isLoggedIn, isLoading, user } = useAuthStore()
+  const { data: userInfo } = useQuery({
+    queryKey: ['me'],
+    enabled: isLoggedIn,
+    queryFn: () => ky.get('/api/users/me').json<User>(),
+  })
+  const { backgroundColor, foregroundColor } = useMemo(() => {
+    const backgroundColor = stringToColor(user?.username || '')
+    const foregroundColor = fontColorContrast(backgroundColor)
+    return {
+      backgroundColor,
+      foregroundColor,
+    }
+  }, [user])
+
+  const avatarUrl = useMemo(() => {
+    if (!userInfo) return undefined
+
+    return qs.stringifyUrl({
+      url: 'https://ui-avatars.com/api/?uppercase=true',
+      query: {
+        name: `${userInfo?.name} ${userInfo?.surname}`,
+        background: backgroundColor,
+        color: foregroundColor,
+      },
+    })
+  }, [backgroundColor, foregroundColor, user, userInfo])
+
   return (
-    <div>
-      {!isAuth ? (
+    <Flex
+      direction="row"
+      bg="rgba(255, 255, 255, 0.21)"
+      h="80px"
+      alignItems="center"
+      justify="center"
+      w="100dvw"
+      backdropFilter="saturate(180%) blur(9px)"
+      position="absolute"
+      top={0}
+      left={0}
+      right={0}
+    >
+      {isLoggedIn ? <MenuToggleButton /> : null}
+      <Flex h="52px" justify="space-between" maxW="1100px" w="100%">
         <Flex
-          direction="row"
-          bg="rgba(0,0,0,0.8)"
-          h="80px"
+          visibility={isLoggedIn ? 'visible' : 'hidden'}
+          justify="flex-start"
           alignItems="center"
-          justify="center"
-          backdropFilter="saturate(180%) blur(9px)"
+          flexShrink={0}
         >
-          <MenuToggleButton />
-          <Flex h="52px" maxW="1100px" w="100%">
-            <Flex
-              justify="flex-start"
-              alignItems="center"
-              flexBasis="50%"
-              flexShrink={0}
-            >
-              <Image
-                mr="16px"
-                src="https://fakeimg.pl/100x46/ffffff/454545?text=Logo&font=noto"
-                h="40px"
-                className="hidden"
-              />
-              <Button mr="16px" hidden>
-                Home
-              </Button>
-              <Button mr="16px" hidden>
-                Eventos
-              </Button>
-            </Flex>
-            <Flex
-              justify="flex-end"
-              flexShrink={0}
-              flexBasis="50%"
-              alignItems="center"
-            >
-              <Button
-                bg="white"
-                color="black"
-                px="16px"
-                mr="16px"
-                className="hidden"
-              >
-                Criar Eventos
-              </Button>
-              {isLoggedIn ? (
-                <MenuRoot>
-                  <MenuTrigger asChild className="mr-[1rem]">
-                    <Button>
-                      <Avatar src="https://avatar.iran.liara.run/public" />
-                      <TbSquareRoundedChevronDownFilled />
-                    </Button>
-                  </MenuTrigger>
-                  <MenuContent>
-                    <MenuItem value="new-txt">New Text File</MenuItem>
-                    <MenuItem value="new-file">New File...</MenuItem>
-                    <MenuItem value="new-win">New Window</MenuItem>
-                    <MenuItem value="open-file">Open File...</MenuItem>
-                    <MenuItem value="export">Export</MenuItem>
-                  </MenuContent>
-                </MenuRoot>
-              ) : (
-                <Button
-                  mr={4}
-                  px={6}
-                  className="bg-orange"
-                  onClick={() => navigate.push('/auth/login')}
-                >
-                  Login
-                </Button>
-              )}
-            </Flex>
-          </Flex>
+          <NextImage
+            style={{ marginRight: '16px', height: '40px' }}
+            src={logoImage}
+            alt="logo"
+            height={40}
+          />
+          <Button hideBelow="md" mr="16px">
+            Home
+          </Button>
+          <Button hideBelow="md" mr="16px">
+            Eventos
+          </Button>
         </Flex>
-      ) : null}
-    </div>
+        <Flex
+          justify="flex-end"
+          flexShrink={0}
+          flexBasis="50%"
+          alignItems="center"
+        >
+          <Button
+            onClick={() => navigate.push('/event/new')}
+            bg="white"
+            color="black"
+            px="16px"
+            mr="16px"
+          >
+            Criar Eventos
+          </Button>
+          {isLoggedIn ? (
+            <MenuRoot>
+              <MenuTrigger asChild className="mr-[1rem]">
+                <Button>
+                  <Avatar borderWidth={2} borderColor="white" src={avatarUrl} />
+                  <TbSquareRoundedChevronDownFilled />
+                </Button>
+              </MenuTrigger>
+              <MenuContent>
+                <MenuItem value="new-txt">New Text File</MenuItem>
+                <MenuItem value="new-file">New File...</MenuItem>
+                <MenuItem value="new-win">New Window</MenuItem>
+                <MenuItem value="open-file">Open File...</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    navigate.push('/auth/logout')
+                    window.location.reload()
+                  }}
+                  cursor="pointer"
+                  color="red"
+                  value="logout"
+                >
+                  Sair
+                </MenuItem>
+              </MenuContent>
+            </MenuRoot>
+          ) : (
+            <Button
+              mr={4}
+              px={6}
+              className="bg-orange"
+              onClick={() => navigate.push('/auth/login')}
+            >
+              Login
+            </Button>
+          )}
+        </Flex>
+      </Flex>
+    </Flex>
   )
 }

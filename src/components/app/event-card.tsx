@@ -2,10 +2,11 @@ import { Button, Card, Flex, Text } from '@chakra-ui/react'
 import EventCardImage from '@/assets/eventcardimage.png'
 import Image from 'next/image'
 import { EventCardItem } from '@/core/events/types'
+import dayjs from 'dayjs'
 
 export function EventCard(event: EventCardItem) {
   const formattedDate = () => {
-    const date = new Date(event.date)
+    const date = dayjs(event.date).toDate()
     const months = [
       'Jan.',
       'Feb.',
