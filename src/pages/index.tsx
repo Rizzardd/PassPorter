@@ -14,7 +14,7 @@ import {
   IoMusicalNotesSharp,
   IoTicket,
 } from 'react-icons/io5'
-import { EventCardItem } from '@/core/events/types'
+import { EventCardItem, EventItem } from '@/core/events/types'
 import { useScreenWidth } from '@/hooks/useScreenWidth'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -22,6 +22,7 @@ import { Urbanist } from 'next/font/google'
 import { HomeSearchArea } from '@/components/app/home-search-area'
 import ky from 'ky'
 import { EventRepository } from '@/core/users/repositories/event.repository'
+import dayjs from 'dayjs'
 
 const urbanist = Urbanist({
   subsets: ['latin'],
@@ -49,7 +50,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 }
 
 interface EventsPageProps {
-  events: EventCardItem[] | null
+  events: EventItem[] | null
 }
 
 export default function Home({ events }: EventsPageProps) {
@@ -100,8 +101,8 @@ export default function Home({ events }: EventsPageProps) {
                 key={i}
                 _id={e._id}
                 name={e.name}
-                date={e.date}
-                image={e.image}
+                date={dayjs(e.date).toDate()}
+                imageUrl={e.imageUrl!}
               />
             </Flex>
           ))}

@@ -16,8 +16,24 @@ export class EventRepository {
 
     const col = await getCollection<EventItem>('events')
 
-    const event = await col.findOne({ _id: new ObjectId(eventId) })
+    const event = await col.findOne({
+      _id: new ObjectId(eventId),
+      active: true,
+    })
 
     return event
+  }
+
+  async saveEvent({ _id, ...event }: EventItem) {
+    const col = await getCollection<EventItem>('events')
+
+    const result = await col.insertOne(event as EventItem)
+
+    const eventItem = {
+      ...event,
+      _id: result.insertedId,
+    }
+
+    return eventItem
   }
 }

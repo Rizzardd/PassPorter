@@ -20,23 +20,56 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { useDropzone } from 'react-dropzone'
 import { FaAsterisk } from 'react-icons/fa'
 import { IoInformationCircle } from 'react-icons/io5'
 
 import { AppStepperCriar } from '@/components/app/app-stepper-criar'
-import { RichEditor } from '@/components/app/rich-editor'
-import { useState } from 'react'
-import { FiChevronLeft, FiImage } from 'react-icons/fi'
+import { CityDropdown } from '@/components/app/city-dropdown'
 import { DropzoneInput } from '@/components/app/dropzone-input'
-import { useForm, FormProvider } from 'react-hook-form'
+import { InputMasked } from '@/components/app/input-masked'
+import { RichEditor } from '@/components/app/rich-editor'
+import { StateDropdown } from '@/components/app/state-dropdown'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
+import { Controller, FormProvider, useForm } from 'react-hook-form'
+import { FiChevronLeft } from 'react-icons/fi'
+import * as yup from 'yup'
+import ky from 'ky'
+import { toaster } from '@/components/ui/toaster'
+import { useRouter } from 'next/router'
+import jsonToFormData from 'json-form-data'
+import { StepperInput } from '@/components/ui/stepper-input'
 
-const frameworks = createListCollection({
+const validationSchema = yup.object().shape({
+  name: yup.string().required('O nome do evento é obrigátorio'),
+  category: yup.string().required('A categoria do evento é obrigátoria'),
+  date: yup.string().required('A data do evento é obrigatória'),
+  time: yup.string().required('A hora do evento é obrigatória'),
+  banner: yup.mixed(),
+  description: yup.string().required('A imagem do banner é obrigatória'),
+  duration: yup.string(),
+  address: yup.object().shape({
+    street: yup.string().required('A rua do evento é obrigatória'),
+    number: yup.string().required('O número do evento é obrigatório'),
+    complement: yup.string(),
+    neighborhood: yup.string().required('O bairro do evento é obrigatório'),
+    city: yup.string().required('A cidade do evento é obrigatória'),
+    state: yup
+      .string()
+      .min(2, 'Estado tem de ter pelo menos 2 letras')
+      .required('O estado do evento é obrigatório'),
+    zipCode: yup.string().required('O cep do evento é obrigatório'),
+  }),
+})
+
+const categories = createListCollection<{ label: string; value: string }>({
   items: [
-    { label: 'React.js', value: 'react' },
-    { label: 'Vue.js', value: 'vue' },
-    { label: 'Angular', value: 'angular' },
-    { label: 'Svelte', value: 'svelte' },
+    { label: 'Artes', value: 'artes' },
+    { label: 'Esportes', value: 'esportes' },
+    { label: 'Acadêmico', value: 'academico' },
+    { label: 'Música', value: 'musica' },
+    { label: 'Festival', value: 'festival' },
+    { label: 'Gastronomia', value: 'gastronomia' },
   ],
 })
 const durations = createListCollection({
@@ -52,14 +85,41 @@ const durations = createListCollection({
 })
 export default function EventForm() {
   const methods = useForm({
-    mode: 'onBlur',
+    resolver: yupResolver(validationSchema),
+    mode: 'onSubmit',
+  })
+  const navigate = useRouter()
+
+  const onSubmit = methods.handleSubmit(async (values) => {
+    try {
+      const formData = jsonToFormData(values)
+
+      const result = await ky.post('/api/events', {
+        body: formData,
+      })
+
+      if (!result.ok) {
+        toaster.error({
+          title:
+            (await result.json<{ message: string }>())?.message ||
+            'Erro ao criar o evento',
+        })
+      }
+      const id = (await result.json<{ id: string }>()).id
+      navigate.push(`/tickets/${id}`)
+    } catch (ex: any) {
+      toaster.error({
+        title: ex.message,
+      })
+    }
   })
 
-  const onSubmit = methods.handleSubmit((values) => {
-    console.log('values', values)
-  })
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = methods
 
-  const [step, setStep] = useState(2)
   const bgColor = '#1b1b1b'
   const inputBg = '#1b1b1b'
   const activeColor = 'green.400'
@@ -85,7 +145,7 @@ export default function EventForm() {
           </Text>
         </Flex>
 
-        <AppStepperCriar step={step} activeColor={activeColor} />
+        {/* <AppStepperCriar step={1} activeColor={activeColor} /> */}
 
         <Flex bg="#303030" rounded="16px" flexDirection="column">
           <Flex
@@ -103,9 +163,12 @@ export default function EventForm() {
 
           <Stack gap={6} p="8px 12px">
             <Field
+              errorText={errors.name?.message}
+              invalid={Boolean(errors.name?.message)}
               label={<RequiredLabel>Dê um nome ao seu evento</RequiredLabel>}
             >
               <Input
+                {...register('name')}
                 borderRadius="32px"
                 px="16px"
                 placeholder="Digite um Nome para o seu Evento"
@@ -114,40 +177,55 @@ export default function EventForm() {
                 _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
               />
             </Field>
-
+            <StepperInput defaultValue="3" />
             <Field
+              errorText={errors.category?.message}
+              invalid={Boolean(errors.category?.message)}
               label={
                 <RequiredLabel>
                   Escolha uma categoria para seu evento
                 </RequiredLabel>
               }
             >
-              <SelectRoot
-                borderRadius="32px"
-                px="16px"
-                bg={inputBg}
-                border="none"
-                _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                collection={frameworks}
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="Selecionar Categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  {frameworks.items.map((framework) => (
-                    <SelectItem item={framework} key={framework.value}>
-                      {framework.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
+              <Controller
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <SelectRoot
+                    name={field.name}
+                    value={[field.value]}
+                    onValueChange={({ value }) => field.onChange(value?.[0])}
+                    onInteractOutside={() => field.onBlur()}
+                    borderRadius="32px"
+                    px="16px"
+                    bg={inputBg}
+                    border="none"
+                    _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                    collection={categories}
+                  >
+                    <SelectTrigger>
+                      <SelectValueText placeholder="Selecionar Categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.items.map((framework) => (
+                        <SelectItem item={framework} key={framework.value}>
+                          {framework.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                )}
+              />
             </Field>
 
             <Field
+              errorText={errors.date?.message}
+              invalid={Boolean(errors.date?.message)}
               label={<RequiredLabel>Quando será seu evento?</RequiredLabel>}
             >
               <Flex gap={4} mb={4} w="100%">
                 <Input
+                  {...register('date')}
                   type="date"
                   borderRadius="32px"
                   px="16px"
@@ -156,6 +234,7 @@ export default function EventForm() {
                   _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
                 />
                 <Input
+                  {...register('time')}
                   type="time"
                   borderRadius="32px"
                   px="16px"
@@ -164,37 +243,58 @@ export default function EventForm() {
                   _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
                 />
               </Flex>
-
-              <Field label={'Qual duração do seu evento?'}>
-                <SelectRoot
-                  borderRadius="32px"
-                  px="16px"
-                  bg={inputBg}
-                  border="none"
-                  textAlign="center"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                  collection={durations}
-                >
-                  <SelectTrigger>
-                    <SelectValueText placeholder="0h" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {durations.items.map((duration) => (
-                      <SelectItem item={duration} key={duration.value}>
-                        {duration.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </SelectRoot>
-              </Field>
+            </Field>
+            <Field
+              errorText={errors.duration?.message}
+              invalid={Boolean(errors.duration?.message)}
+              label={'Qual duração do seu evento?'}
+            >
+              <Controller
+                control={control}
+                name="duration"
+                render={({ field }) => (
+                  <SelectRoot
+                    name={field.name}
+                    value={[field.value ?? '']}
+                    onValueChange={({ value }) =>
+                      field.onChange(value?.[0] ?? '')
+                    }
+                    borderRadius="32px"
+                    px="16px"
+                    bg={inputBg}
+                    border="none"
+                    textAlign="center"
+                    _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                    collection={durations}
+                  >
+                    <SelectTrigger>
+                      <SelectValueText placeholder="0h" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {durations.items.map((duration) => (
+                        <SelectItem item={duration} key={duration.value}>
+                          {duration.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </SelectRoot>
+                )}
+              />
             </Field>
 
             <DropzoneInput
+              label={
+                <RequiredLabel>Adicione um banner ao seu evento</RequiredLabel>
+              }
               name="image"
               accept={{ 'image/*': ['png', 'jpg'] }}
             />
 
-            <Field label="Descreva seu evento">
+            <Field
+              errorText={errors.description?.message}
+              invalid={Boolean(errors.description?.message)}
+              label="Descreva seu evento"
+            >
               <RichEditor />
             </Field>
 
@@ -204,64 +304,104 @@ export default function EventForm() {
               }
             >
               <Stack gap={4} w="100%">
-                <Input
-                  borderRadius="32px"
-                  px="16px"
-                  placeholder="Digite seu Estado"
-                  bg={inputBg}
-                  border="none"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                />
+                <Flex>
+                  <StateDropdown mr="4px" name="address.state" />
 
-                <Input
-                  borderRadius="32px"
-                  px="16px"
-                  placeholder="Digite sua Cidade"
-                  bg={inputBg}
-                  border="none"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                />
-                <Input
-                  borderRadius="32px"
-                  px="16px"
-                  placeholder="Digite seu CEP"
-                  bg={inputBg}
-                  border="none"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                />
-                <Input
-                  borderRadius="32px"
-                  px="16px"
-                  placeholder="Digite seu Bairro"
-                  bg={inputBg}
-                  border="none"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                />
-                <Input
-                  borderRadius="32px"
-                  px="16px"
-                  placeholder="Digite o Número da casa/apartamento"
-                  bg={inputBg}
-                  border="none"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                />
-                <Input
-                  borderRadius="32px"
-                  px="16px"
-                  placeholder="Digite o complemento, ex: quadra, lote, bloco"
-                  bg={inputBg}
-                  border="none"
-                  _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
-                />
+                  <CityDropdown
+                    ml="4px"
+                    stateName="address.state"
+                    name="address.city"
+                  />
+                </Flex>
+                <Field
+                  errorText={errors.address?.street?.message}
+                  invalid={Boolean(errors.address?.street?.message)}
+                >
+                  <Input
+                    {...register('address.street')}
+                    borderRadius="32px"
+                    px="16px"
+                    placeholder="Logradouro"
+                    bg={inputBg}
+                    border="none"
+                    _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                  />
+                </Field>
+                <Field
+                  errorText={errors.address?.complement?.message}
+                  invalid={Boolean(errors.address?.complement?.message)}
+                >
+                  <Input
+                    {...register('address.complement')}
+                    borderRadius="32px"
+                    px="16px"
+                    placeholder="complemento, ex: quadra, lote, bloco"
+                    bg={inputBg}
+                    border="none"
+                    _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                  />
+                </Field>{' '}
+                <Field
+                  errorText={errors.address?.neighborhood?.message}
+                  invalid={Boolean(errors.address?.neighborhood?.message)}
+                >
+                  <Input
+                    {...register('address.neighborhood')}
+                    borderRadius="32px"
+                    px="16px"
+                    placeholder="Bairro"
+                    bg={inputBg}
+                    border="none"
+                    _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                  />
+                </Field>
+                <Flex>
+                  <Field
+                    errorText={errors.address?.number?.message}
+                    invalid={Boolean(errors.address?.number?.message)}
+                  >
+                    <Input
+                      {...register('address.number')}
+                      borderRadius="32px"
+                      px="16px"
+                      placeholder="Número"
+                      bg={inputBg}
+                      border="none"
+                      _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                    />
+                  </Field>
+                  <Field
+                    errorText={errors.address?.zipCode?.message}
+                    invalid={Boolean(errors.address?.zipCode?.message)}
+                  >
+                    <Controller
+                      control={control}
+                      name="address.zipCode"
+                      render={({ field }) => (
+                        <InputMasked
+                          onChange={field.onChange}
+                          value={field.value}
+                          onBlur={field.onBlur}
+                          mask="_____-___"
+                          borderRadius="32px"
+                          px="16px"
+                          ml="8px"
+                          placeholder="CEP"
+                          bg={inputBg}
+                          border="none"
+                          _focus={{
+                            boxShadow: 'none',
+                            borderColor: 'transparent',
+                          }}
+                        />
+                      )}
+                    />
+                  </Field>
+                </Flex>
               </Stack>
             </Field>
 
-            <Button
-              colorScheme="green"
-              size="lg"
-              w="full"
-              onClick={() => setStep(Math.min(step + 1, 3))}
-            >
+            <Button colorScheme="green" size="lg" w="full" type="submit">
               Próximo
             </Button>
           </Stack>

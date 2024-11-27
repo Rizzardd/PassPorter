@@ -36,8 +36,8 @@ export function EventCard(event: EventCardItem) {
     <div className="w-full relative hover:cursor-pointer">
       <Image
         alt=""
-        loader={() => event.image}
-        src={event.image}
+        loader={() => event.imageUrl}
+        src={event.imageUrl}
         width={100}
         height={100}
         unoptimized

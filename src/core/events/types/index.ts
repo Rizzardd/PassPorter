@@ -4,22 +4,27 @@ export interface EventCardItem {
   _id: ObjectId | string
   date: Date
   name: string
-  image: string
+  imageUrl: string
+}
+
+export interface Address {
+  street: string
+  complement: string
+  neighborhood: string
+  number: string
+  zipCode: string
+  state: string
+  city: string
 }
 
 export interface EventItem {
   _id: ObjectId | string
-  date: Date | string
+  address: Address
+  duration: string
+  time: string
+  date: string | Date
+  category: string
   name: string
-  image: string
   description: string
-  location: {
-    address: string
-    district: string
-    number: number
-    city: string
-    state: string
-    venue?: string
-    complement?: string
-  }
+  imageUrl?: string // Descomente esta linha e ajuste o tipo se quiser incluir imagens/arquivos.
 }
