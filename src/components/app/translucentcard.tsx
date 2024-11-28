@@ -1,6 +1,6 @@
 import Wallpaper from '@/assets/wallpaper.png'
 import Image from 'next/image'
-import { Flex } from '@chakra-ui/react'
+import { Flex, Text, IconButton } from '@chakra-ui/react'
 import { Avatar } from '@/components/ui/avatar'
 import { RiVerifiedBadgeFill } from 'react-icons/ri'
 
@@ -9,8 +9,13 @@ import fontColorContrast from 'font-color-contrast'
 import { useMemo } from 'react'
 import stringToColor from 'string-to-color'
 import qs from 'query-string'
+import { FiChevronLeft } from 'react-icons/fi'
+import { useRouter } from 'next/router'
+import { Button } from '../ui/button'
 
 export default function TranslucentCard({ user }: { user: User }) {
+  const navigate = useRouter()
+
   const { backgroundColor, foregroundColor } = useMemo(() => {
     const backgroundColor = stringToColor(user?.username || '')
     const foregroundColor = fontColorContrast(backgroundColor)
@@ -39,6 +44,19 @@ export default function TranslucentCard({ user }: { user: User }) {
       className=" justify-items-center h-fit rounded-t-lg relative "
     >
       <Image alt="" src={Wallpaper} />
+      <Flex position="absolute" top="0" left="0" right="0">
+        <Flex align="center" mb={8}>
+          <Button
+            onClick={() => navigate.push('/')}
+            aria-label="Back"
+            variant="ghost"
+            mr={2}
+          >
+            <FiChevronLeft />
+            <Text>Voltar</Text>
+          </Button>
+        </Flex>
+      </Flex>
       <div className="absolute bottom-0 w-full  ">
         <Flex
           direction="row"

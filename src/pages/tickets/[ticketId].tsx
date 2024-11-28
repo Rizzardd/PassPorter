@@ -38,6 +38,7 @@ export default function TicketPage({
       mx="auto"
       w="100%"
       p="16px"
+      pt="90px"
       minH="100vh"
       flexDir="column"
       justify="center"

@@ -7,7 +7,7 @@ import { EventItem, EventCardItem } from '@/core/events/types'
 import { EventRepository } from '@/core/users/repositories/event.repository'
 import useAuthStore from '@/core/users/stores/useAuthStore'
 import { isAuthOnStatic } from '@/lib/isAuthOnStatic'
-import { Flex } from '@chakra-ui/react'
+import { Flex, IconButton, Text } from '@chakra-ui/react'
 import { getCookie } from 'cookies-next'
 import dayjs from 'dayjs'
 import ky from 'ky'
@@ -15,6 +15,7 @@ import { GetServerSideProps } from 'next'
 import { cookies } from 'next/headers'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { FiChevronLeft } from 'react-icons/fi'
 import { IoIosArrowDropleftCircle } from 'react-icons/io'
 
 interface EventPageProps {
@@ -94,7 +95,18 @@ export default function BookingDetails({ event }: EventPageProps) {
   return (
     <main>
       <div className="w-full h-full ">
-        <Flex maxH={['auto', 'auto', '300px']}>
+        <Flex align="center" mb={8}>
+          <Button
+            onClick={() => router.replace(`/event/${event._id}`)}
+            aria-label="Go back"
+            variant="ghost"
+            mr={2}
+          >
+            <FiChevronLeft />
+            Voltar
+          </Button>
+        </Flex>
+        <Flex mt="50px" maxH={['auto', 'auto', '300px']}>
           <BookingDetailsCard
             _id={event._id}
             imageUrl={event.imageUrl!}
