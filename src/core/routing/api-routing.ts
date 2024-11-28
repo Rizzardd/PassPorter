@@ -78,11 +78,11 @@ export function Routing(): Routing {
     },
 
     authGet(handler: AuthHandler) {
-      getHandler = hofAuth(handler)
       return routing
     },
     authPost(handler: AuthHandler) {
       postHandler = hofAuth(handler)
+      console.log({ postHandler })
       return routing
     },
     authPut(handler: AuthHandler) {

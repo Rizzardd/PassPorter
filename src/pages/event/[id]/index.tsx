@@ -2,31 +2,41 @@ import { IoIosPin } from 'react-icons/io'
 import TranslucentCard from '@/components/app/translucentcard'
 import EventDetailsCard from '@/components/app/event-details-card'
 import { EventCardItem, EventItem } from '@/core/events/types'
-import { Button } from '@chakra-ui/react'
+import { Button, Flex } from '@chakra-ui/react'
 import { IoQrCodeOutline } from 'react-icons/io5'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import dayjs from 'dayjs'
+import { EventRepository } from '@/core/users/repositories/event.repository'
+import { UserRepository } from '@/core/users/repositories/user.repository'
+
+import { User } from '@/core/users/types'
 
 interface EventPageProps {
   event: EventItem
+  user: User
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params!
+  const { id } = context.query!
+  const res = await new EventRepository().getById(id as string)
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/getEvent?id=${id}`
-  )
-  if (!res.ok) {
-    return { props: { event: null } }
+  if (!res) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
   }
 
-  const event: EventItem = await res.json()
-  return { props: { event } }
+  const user = await new UserRepository().getUser(res?.userId as string)
+
+  const event: EventItem = res
+  return { props: { event, user } }
 }
 
-export default function EventDetails({ event }: EventPageProps) {
+export default function EventDetails({ event, user }: EventPageProps) {
   console.log(event)
   const navigate = useRouter()
   const formattedDate = () => {
@@ -62,8 +72,12 @@ export default function EventDetails({ event }: EventPageProps) {
   const date = formattedDate()
   return (
     <div className="flex flex-col items-center">
-      <TranslucentCard />
-      <div className=" bg-dark-grey w-full h-full rounded-t-3xl px-5 py-4  flex ">
+      <TranslucentCard user={user} />
+      <Flex
+        mt="8px"
+        maxW={['100%', '100%', '800px']}
+        className=" bg-dark-grey w-full h-full rounded-t-3xl px-5 py-4  flex "
+      >
         <div className="flex flex-col">
           <div className="rounded-t-lg bg-light-purple w-[60px] h-[30px] flex text-center items-center">
             <p className="font-display text-white font-normal text-[15px] mx-auto">
@@ -83,19 +97,17 @@ export default function EventDetails({ event }: EventPageProps) {
             <p className=" font-normal  font-display text-light-grey ml-1">
               Evento Presencial, Começa em {date.day} de {date.month},{' '}
               <span className=" capitalize">{date.weekday}</span>, {date.year} -{' '}
-              {date.time} - 2h
+              {date.time} - {formatDuration(Number(event.duration) || 1)}
             </p>
           </div>
         </div>
-      </div>
+      </Flex>
       <div className="flex px-5">
         <p className=" font-normal font-display text-light-grey ml-1 text-[18px] py-5">
-          {event.description}
+          <p dangerouslySetInnerHTML={{ __html: event.description }} />
         </p>
 
-        <div>
-          {/* TODO: @PvtWendy ajustar aquyi o google maps conforme o protótipo do figma, de preferência funcionando. */}
-        </div>
+        <div></div>
       </div>
 
       <div className="px-5 w-full flex justify-center items-center">
@@ -117,4 +129,13 @@ export default function EventDetails({ event }: EventPageProps) {
       </Button>
     </div>
   )
+}
+
+function formatDuration(duration: number) {
+  const hourComponent = Math.floor(duration / 60)
+  const minuteComponent = duration % 60
+
+  let result = `${hourComponent}h`
+  if (minuteComponent) result += ` ${minuteComponent}min`
+  return result
 }

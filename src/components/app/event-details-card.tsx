@@ -25,20 +25,17 @@ export default function EventDetailsCard(event: EventCardItem) {
           alignItems="center"
           className="rounded-3xl"
         >
-          <div className="px-4">
-            <h1 className="py-1 font-bold font-display text-[20px]">
-              Preço Unico
-            </h1>
+          <Flex className="px-4" flex={1}>
             <p className="font-semibold font-display text-[15px]">
               {event.name}
             </p>
-          </div>
+          </Flex>
           <div className="flex px-10">
-            <IoIosRemoveCircle className="scale-150 w-[20px] h-[20px]" />
+            {/* <IoIosRemoveCircle className="scale-150 w-[20px] h-[20px]" />
             <p className="font-semibold font-display px-5 text-[25px] mt-[-8px]">
               1
             </p>
-            <IoMdAddCircle className="scale-150 w-[20px] h-[20px]" />
+            <IoMdAddCircle className="scale-150 w-[20px] h-[20px]" /> */}
           </div>
         </Flex>
       </div>

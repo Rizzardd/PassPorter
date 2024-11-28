@@ -1,7 +1,7 @@
 'use client'
 
 import StarterKit from '@tiptap/starter-kit'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 // => Tiptap packages
 import { useEditor, EditorContent, Editor, BubbleMenu } from '@tiptap/react'
 import Document from '@tiptap/extension-document'
@@ -42,8 +42,11 @@ import {
 import { Button } from '../ui/button'
 import { DialogRootProps, IconButton, Input } from '@chakra-ui/react'
 import { on } from 'events'
+import { useFormContext } from 'react-hook-form'
 
-export function RichEditor() {
+export function RichEditor({ name }: { name: string }) {
+  const { register, unregister, resetField, setValue, watch } = useFormContext()
+  const value = watch(name)
   const editor = useEditor({
     extensions: [
       Document,
@@ -60,10 +63,20 @@ export function RichEditor() {
       Code,
     ],
     content: '',
+    onUpdate(props) {
+      const value = editor.getHTML()
+      setValue(name, value)
+    },
   }) as Editor
+
   const [modalIsOpen, setIsOpen] = useState(false)
   const [url, setUrl] = useState<string>('')
-
+  useEffect(() => {
+    register(name)
+    return () => {
+      unregister(name)
+    }
+  }, [register, unregister, name])
   const openModal = useCallback(() => {
     console.log(editor.chain().focus())
     setUrl(editor.getAttributes('link').href)

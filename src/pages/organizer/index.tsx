@@ -19,7 +19,7 @@ export default function OrganizerProfile() {
   ]
   return (
     <div className="flex flex-col items-center">
-      <TranslucentCard />
+      {/* <TranslucentCard /> */}
       <div className=" bg-dark-grey w-full h-full rounded-t-3xl px-5 py-4  flex flex-col items-center justify-center ">
         <div className="flex flex-col w-full max-w-[400px] ">
           <Button className="bg-grey h-16 w-full max-w-[400px] mt-5 font-display rounded-full border-2 border-grey text-white mb-5 mx-5 items-center justify-center">

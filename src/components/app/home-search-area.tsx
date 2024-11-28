@@ -4,7 +4,21 @@ import { Button } from '@/components/ui/button'
 import { IoIosPin } from 'react-icons/io'
 import { IoTicket } from 'react-icons/io5'
 
-export function HomeSearchArea() {
+export function HomeSearchArea({
+  onNameChange,
+  onLocaleChange,
+  name,
+  locale,
+  onSearch,
+  loading,
+}: {
+  onNameChange: (name: string) => void
+  onLocaleChange: (locale: string) => void
+  name: string
+  locale: string
+  onSearch: () => void
+  loading: boolean
+}) {
   return (
     <Flex justifyContent="center">
       <Flex
@@ -31,6 +45,8 @@ export function HomeSearchArea() {
           startElementProps={{ color: '#F68A66' }}
         >
           <Input
+            onChange={(e) => onLocaleChange(e.target.value)}
+            value={locale}
             h={['50px', '50px', '65px', '80px']}
             mr={[0, 0, 0, '9%']}
             bg="white"
@@ -56,6 +72,8 @@ export function HomeSearchArea() {
           startElementProps={{ color: '#F68A66' }}
         >
           <Input
+            onChange={(e) => onNameChange(e.target.value)}
+            value={name}
             h={['50px', '50px', '65px', '80px']}
             mr={[0, 0, 0, '9%']}
             bg="white"
@@ -64,7 +82,13 @@ export function HomeSearchArea() {
             color={'#1b1b1b'}
           />
         </InputGroup>
-        <Button w="180px" h={['60px', '60px', '60px', '80px']} bg="#F68A66">
+        <Button
+          loading={loading}
+          onClick={onSearch}
+          w="180px"
+          h={['60px', '60px', '60px', '80px']}
+          bg="#F68A66"
+        >
           Buscar
         </Button>
       </Flex>

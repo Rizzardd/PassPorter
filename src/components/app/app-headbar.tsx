@@ -20,8 +20,10 @@ import Link from 'next/link'
 
 export function AppHeadbar({}: React.PropsWithChildren<{}>) {
   const navigate = useRouter()
-  const isAuth = navigate.route.includes('/auth')
-  if (isAuth) return null
+  const showHeader = ['/auth', '/booking', '/event/'].some((x) =>
+    navigate.route.includes(x)
+  )
+  if (showHeader) return null
   return <AppBarContent />
 }
 
@@ -70,7 +72,7 @@ function AppBarContent() {
       left={0}
       right={0}
     >
-      {isLoggedIn ? <MenuToggleButton /> : null}
+      {/* {isLoggedIn ? <MenuToggleButton /> : null} */}
       <Flex h="52px" justify="space-between" maxW="1100px" w="100%">
         <Flex
           visibility={isLoggedIn ? 'visible' : 'hidden'}
@@ -78,18 +80,23 @@ function AppBarContent() {
           alignItems="center"
           flexShrink={0}
         >
-          <NextImage
+          {/* <NextImage
             style={{ marginRight: '16px', height: '40px' }}
             src={logoImage}
             alt="logo"
             height={40}
-          />
-          <Button hideBelow="md" mr="16px">
+          /> */}
+          <Button
+            ml="16px"
+            textShadow="xs"
+            color="white"
+            onClick={() => navigate.push('/')}
+          >
             Home
           </Button>
-          <Button hideBelow="md" mr="16px">
+          {/* <Button hideBelow="md" mr="16px">
             Eventos
-          </Button>
+          </Button> */}
         </Flex>
         <Flex
           justify="flex-end"
@@ -97,15 +104,27 @@ function AppBarContent() {
           flexBasis="50%"
           alignItems="center"
         >
-          <Button
-            onClick={() => navigate.push('/event/new')}
-            bg="white"
-            color="black"
-            px="16px"
-            mr="16px"
-          >
-            Criar Eventos
-          </Button>
+          {isLoggedIn ? (
+            <Button
+              onClick={() => navigate.push('/event/new')}
+              bg="white"
+              color="black"
+              px="16px"
+              mr="16px"
+            >
+              Criar Eventos
+            </Button>
+          ) : (
+            <Button
+              onClick={() => navigate.push('/auth/register')}
+              bg="white"
+              color="black"
+              px="16px"
+              mr="16px"
+            >
+              Cadastrar
+            </Button>
+          )}
           {isLoggedIn ? (
             <MenuRoot>
               <MenuTrigger asChild className="mr-[1rem]">
@@ -115,10 +134,15 @@ function AppBarContent() {
                 </Button>
               </MenuTrigger>
               <MenuContent>
-                <MenuItem value="new-txt">New Text File</MenuItem>
-                <MenuItem value="new-file">New File...</MenuItem>
-                <MenuItem value="new-win">New Window</MenuItem>
-                <MenuItem value="open-file">Open File...</MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    navigate.push('/tickets/my-tickets')
+                  }}
+                  cursor="pointer"
+                  value="mytickets"
+                >
+                  Meus Tickets
+                </MenuItem>
                 <MenuItem
                   onClick={() => {
                     navigate.push('/auth/logout')

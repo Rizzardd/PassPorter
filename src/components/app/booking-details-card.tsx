@@ -23,7 +23,11 @@ export function BookingDetailsCard(event: EventCardItem) {
   ]
 
   return (
-    <div className=" w-[90%] h-[90%] mx-auto relative">
+    <Flex
+      maxH={['auto', 'auto', '300px']}
+      maxW={['auto', 'auto', '800px']}
+      className=" w-[90%] h-[90%] mx-auto relative"
+    >
       <Image
         alt=""
         loader={() => event.imageUrl}
@@ -52,6 +56,6 @@ export function BookingDetailsCard(event: EventCardItem) {
           </div>
         </div>
       </Flex>
-    </div>
+    </Flex>
   )
 }

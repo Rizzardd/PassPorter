@@ -15,14 +15,26 @@ export const config = {
   },
 }
 export default Routing()
+  .get(async (req, res) => {
+    const { name, locale, category } = req.query
+
+    const repository = new EventRepository()
+    const events = await repository.filter(
+      name as string,
+      locale as string,
+      category as string
+    )
+
+    res.send(events)
+  })
   .authPost(async (req, res, userInfo) => {
     const form = new IncomingForm()
     const [fields, files] = await form.parse(req)
 
     let imageUrl = ''
 
-    if ('image' in files) {
-      const f = files['image']?.[0]!
+    if ('banner' in files) {
+      const f = files['banner']?.[0]!
       const file = await readFile(f.filepath)
 
       const result = await put(`events/banner/${randomUUID()}`, file, {
@@ -43,6 +55,7 @@ export default Routing()
         state: fields['address[state]']?.[0] || '',
         city: fields['address[city]']?.[0] || '',
       },
+      numberOfTickets: Number(fields['numberOfTickets']?.[0] || 1) || 1,
       duration: fields['duration']?.[0] || '',
       time: fields['time']?.[0] || '',
       date: fields['date']?.[0] || '',
@@ -50,9 +63,11 @@ export default Routing()
       name: fields['name']?.[0] || '',
       description: fields['description']?.[0] || '',
       imageUrl,
+      userId: userInfo.userId,
     }
 
     const repository = new EventRepository()
-    repository.saveEvent(data)
+    const event = await repository.saveEvent(data)
+    res.send(event)
   })
   .build()

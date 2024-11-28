@@ -35,3 +35,12 @@ export async function getCollection<TDocument extends Document = Document>(
   const client = await clientPromise
   return client.db('passporter-test').collection<TDocument>(name)
 }
+
+export async function getDb() {
+  const client = await clientPromise
+  return client.db('passporter-test')
+}
+export async function getClient() {
+  const client = await clientPromise
+  return client
+}

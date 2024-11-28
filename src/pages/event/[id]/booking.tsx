@@ -1,10 +1,20 @@
 import { BookingDetailsCard } from '@/components/app/booking-details-card'
 import BookingDetailsForm from '@/components/app/booking-details-form'
 import { EventCard } from '@/components/app/event-card'
+import { Button } from '@/components/ui/button'
+import { toaster } from '@/components/ui/toaster'
 import { EventItem, EventCardItem } from '@/core/events/types'
+import { EventRepository } from '@/core/users/repositories/event.repository'
+import useAuthStore from '@/core/users/stores/useAuthStore'
+import { isAuthOnStatic } from '@/lib/isAuthOnStatic'
 import { Flex } from '@chakra-ui/react'
+import { getCookie } from 'cookies-next'
 import dayjs from 'dayjs'
+import ky from 'ky'
 import { GetServerSideProps } from 'next'
+import { cookies } from 'next/headers'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { IoIosArrowDropleftCircle } from 'react-icons/io'
 
 interface EventPageProps {
@@ -12,57 +22,102 @@ interface EventPageProps {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.params!
+  const accessToken = context.req.cookies['jwt:access_token']
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/getEvent?id=${id}`
-  )
-  if (!res.ok) {
-    return { props: { event: null } }
+  if (!accessToken) {
+    return {
+      redirect: {
+        destination: '/auth/register',
+        permanent: false,
+      },
+    }
   }
 
-  const event: EventItem = await res.json()
+  const { id } = context.query!
+  const result = await new EventRepository().getById(id as string)
+
+  if (!result) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  const event: EventItem = result
   return { props: { event } }
 }
 
 export default function BookingDetails({ event }: EventPageProps) {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const { isLoggedIn } = useAuthStore()
+
+  const bookTicket = async () => {
+    setIsLoading(true)
+
+    const response = await ky.post('/api/events/booking', {
+      json: {
+        eventId: event._id,
+      },
+    })
+
+    if (!response.ok) {
+      toaster.error({
+        title: 'Erro ao reservar ingresso',
+      })
+      setIsLoading(false)
+      return
+    }
+
+    const { ticketId, success, message } = await response.json<{
+      ticketId: string
+      success: string
+      message: string
+    }>()
+
+    if (!success) {
+      toaster.error({
+        title: message,
+      })
+
+      setIsLoading(false)
+      return
+    }
+
+    setIsLoading(false)
+
+    router.push(`/tickets/${ticketId}`)
+  }
+
   return (
     <main>
       <div className="w-full h-full ">
-        <BookingDetailsCard
-          _id={event._id}
-          imageUrl={event.imageUrl!}
-          name={event.name}
-          date={dayjs(event.date).toDate()}
-        />
-        <div className="px-4 w-[90%] mx-auto">
-          <h1 className="font-display text-white font-medium text-[30px] mb-5">
-            Detalhes do Pedido
-          </h1>
-          <div className="w-full flex justify-between  mb-5 text-[20px]">
-            <p className="font-display text-white font-thin ">
-              1X <span className="ml-3">Ingresso Comum</span>
-            </p>
-            <p className="font-display text-white font-thin ">R$0</p>
-          </div>
-          <div className="w-full flex justify-between mb-5 text-[20px]">
-            <p className="font-display text-white font-thin ">Subtotal</p>
-            <p className="font-display text-white font-thin ">R$0</p>
-          </div>
-          <div className="w-full flex justify-between mb-5 text-[20px]">
-            <p className="font-display text-white font-thin ">Taxas</p>
-            <p className="font-display text-white font-thin ">R$0</p>
-          </div>
+        <Flex maxH={['auto', 'auto', '300px']}>
+          <BookingDetailsCard
+            _id={event._id}
+            imageUrl={event.imageUrl!}
+            name={event.name}
+            date={dayjs(event.date).toDate()}
+          />
+        </Flex>
 
-          <div className="bg-dark-grey py-3 w-full font-display rounded-full mx-auto px-4 flex justify-between text-[20px] ">
-            <p className="font-display text-white font-thin  ">Total</p>
-            <p className="font-display text-white font-thin  ">R$0</p>
-          </div>
-
-          <hr className="my-12 mx-auto h-0.5 border-t-0 w-72 bg-dark-grey" />
-
-          <BookingDetailsForm />
-        </div>
+        <Flex justify="center" mt="80px">
+          <Button
+            bg="#b3d654"
+            px="32px"
+            py="8px"
+            color="#303030"
+            variant="subtle"
+            size="2xl"
+            loading={isLoading}
+            loadingText="Reservando..."
+            onClick={() => bookTicket()}
+          >
+            Reservar Entrada
+          </Button>
+        </Flex>
       </div>
     </main>
   )

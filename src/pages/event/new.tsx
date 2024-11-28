@@ -39,15 +39,20 @@ import { toaster } from '@/components/ui/toaster'
 import { useRouter } from 'next/router'
 import jsonToFormData from 'json-form-data'
 import { StepperInput } from '@/components/ui/stepper-input'
+import { EventItem } from '@/core/events/types'
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('O nome do evento é obrigátorio'),
   category: yup.string().required('A categoria do evento é obrigátoria'),
   date: yup.string().required('A data do evento é obrigatória'),
   time: yup.string().required('A hora do evento é obrigatória'),
-  banner: yup.mixed(),
-  description: yup.string().required('A imagem do banner é obrigatória'),
+  banner: yup.mixed().required('A imagem do banner é obrigatória'),
+  description: yup.string(),
   duration: yup.string(),
+  amountOfTickets: yup
+    .string()
+    .matches(/^[0-9]+$/, 'O número de ingressos deve ser um número')
+    .required('O número de ingressos é obrigatório'),
   address: yup.object().shape({
     street: yup.string().required('A rua do evento é obrigatória'),
     number: yup.string().required('O número do evento é obrigatório'),
@@ -105,8 +110,8 @@ export default function EventForm() {
             'Erro ao criar o evento',
         })
       }
-      const id = (await result.json<{ id: string }>()).id
-      navigate.push(`/tickets/${id}`)
+      const id = (await result.json<EventItem>())._id
+      navigate.push(`/event/${id}`)
     } catch (ex: any) {
       toaster.error({
         title: ex.message,
@@ -137,7 +142,12 @@ export default function EventForm() {
         p={4}
       >
         <Flex align="center" mb={8}>
-          <IconButton aria-label="Go back" variant="ghost" mr={2}>
+          <IconButton
+            onClick={() => navigate.replace('/')}
+            aria-label="Go back"
+            variant="ghost"
+            mr={2}
+          >
             <FiChevronLeft />
           </IconButton>
           <Text fontSize="lg" fontWeight="medium">
@@ -177,7 +187,69 @@ export default function EventForm() {
                 _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
               />
             </Field>
-            <StepperInput defaultValue="3" />
+            <Field
+              errorText={errors.name?.message}
+              invalid={Boolean(errors.name?.message)}
+            >
+              <RequiredLabel>Quantas vagas para o evento?</RequiredLabel>
+              <Controller
+                control={control}
+                name="amountOfTickets"
+                render={({ field }) => (
+                  <Flex>
+                    <Button
+                      borderRadius="32px"
+                      mr="8px"
+                      px="16px"
+                      bg={inputBg}
+                      border="none"
+                      _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                      onClick={() => {
+                        let currentValue = Number(field.value)
+                        if (!currentValue) currentValue = 1
+                        currentValue -= 10
+                        currentValue = Math.max(1, currentValue)
+                        field.onChange(`${currentValue}`)
+                      }}
+                    >
+                      - 10
+                    </Button>
+                    <Flex
+                      borderRadius="32px"
+                      px="16px"
+                      bg={inputBg}
+                      border="none"
+                      _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                    >
+                      <StepperInput
+                        value={field.value}
+                        onValueChange={(x) => {
+                          let value = Number(x.value)
+                          value = Math.max(value, 1)
+                          field.onChange(`${value}`)
+                        }}
+                        defaultValue="1"
+                      />
+                    </Flex>
+                    <Button
+                      borderRadius="32px"
+                      ml="8px"
+                      px="16px"
+                      bg={inputBg}
+                      border="none"
+                      _focus={{ boxShadow: 'none', borderColor: 'transparent' }}
+                      onClick={() => {
+                        let currentValue = Number(field.value)
+                        if (!currentValue) currentValue = 1
+                        field.onChange(`${currentValue + 10}`)
+                      }}
+                    >
+                      + 10
+                    </Button>
+                  </Flex>
+                )}
+              />
+            </Field>
             <Field
               errorText={errors.category?.message}
               invalid={Boolean(errors.category?.message)}
@@ -286,8 +358,8 @@ export default function EventForm() {
               label={
                 <RequiredLabel>Adicione um banner ao seu evento</RequiredLabel>
               }
-              name="image"
-              accept={{ 'image/*': ['png', 'jpg'] }}
+              name="banner"
+              accept={{ 'image/jpeg': [], 'image/png': [] }}
             />
 
             <Field
@@ -295,7 +367,7 @@ export default function EventForm() {
               invalid={Boolean(errors.description?.message)}
               label="Descreva seu evento"
             >
-              <RichEditor />
+              <RichEditor name="description" />
             </Field>
 
             <Field

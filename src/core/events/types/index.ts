@@ -22,9 +22,17 @@ export interface EventItem {
   address: Address
   duration: string
   time: string
+  numberOfTickets: number
   date: string | Date
   category: string
   name: string
   description: string
-  imageUrl?: string // Descomente esta linha e ajuste o tipo se quiser incluir imagens/arquivos.
+  imageUrl?: string
+  userId: string
+}
+
+export interface TicketItem {
+  _id: ObjectId | string
+  eventId: string
+  userId: string
 }

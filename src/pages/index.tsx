@@ -23,6 +23,7 @@ import { HomeSearchArea } from '@/components/app/home-search-area'
 import ky from 'ky'
 import { EventRepository } from '@/core/users/repositories/event.repository'
 import dayjs from 'dayjs'
+import { useQuery } from '@tanstack/react-query'
 
 const urbanist = Urbanist({
   subsets: ['latin'],
@@ -30,13 +31,13 @@ const urbanist = Urbanist({
 })
 
 const CardCategory = [
-  { icon: <IoGrid />, name: 'Todos' },
-  { icon: <IoIosColorPalette />, name: 'Artes' },
-  { icon: <IoBaseball />, name: 'Esportes' },
-  { icon: <IoBook />, name: 'Acadêmico' },
-  { icon: <IoMusicalNotesSharp />, name: 'Música' },
-  { icon: <IoBalloon />, name: 'Festival' },
-  { icon: <IoFastFood />, name: 'Gastronomia' },
+  { icon: <IoGrid />, name: 'Todos', value: '' },
+  { icon: <IoIosColorPalette />, name: 'Artes', value: 'artes' },
+  { icon: <IoBaseball />, name: 'Esportes', value: 'esportes' },
+  { icon: <IoBook />, name: 'Acadêmico', value: 'academico' },
+  { icon: <IoMusicalNotesSharp />, name: 'Música', value: 'musica' },
+  { icon: <IoBalloon />, name: 'Festival', value: 'festival' },
+  { icon: <IoFastFood />, name: 'Gastronomia', value: 'gastronomia' },
 ]
 
 export const getServerSideProps: GetServerSideProps = async () => {
@@ -56,12 +57,47 @@ interface EventsPageProps {
 export default function Home({ events }: EventsPageProps) {
   const screen = useScreenWidth()
   const navigate = useRouter()
+  const [name, setName] = useState<string>('')
+  const [locale, setLocale] = useState<string>('')
+  const [category, setCategory] = useState<string>('')
+
+  const { refetch, data, isLoading } = useQuery({
+    queryKey: ['events'],
+    queryFn: async () => {
+      const result = await ky
+        .get('/api/events', {
+          searchParams: {
+            name,
+            locale,
+            category,
+          },
+        })
+        .json<EventItem[]>()
+      console.log({ result })
+      return result
+    },
+    initialData: events,
+    enabled: false,
+  })
+
+  useEffect(() => {
+    refetch()
+  }, [category])
+
+  console.log({ data })
 
   return (
     <Flex flexDirection="column" alignItems="center">
       <HeroBanner />
       <Flex flexDirection="column" p="36px" maxW="1440px">
-        <HomeSearchArea />
+        <HomeSearchArea
+          loading={isLoading}
+          onNameChange={setName}
+          onLocaleChange={setLocale}
+          name={name}
+          locale={locale}
+          onSearch={() => refetch()}
+        />
         <Flex
           mt={['32px', '32px', '32px']}
           justifyContent={['center', 'center', 'center', 'space-between']}
@@ -70,16 +106,22 @@ export default function Home({ events }: EventsPageProps) {
         >
           {CardCategory.map((e, i) => (
             <Button
+              onClick={() => {
+                setCategory(e.value || '')
+              }}
+              loading={isLoading}
+              loadingText="Buscando..."
               flexGrow={[1, 0]}
               px={['8px', '8px', '16px', '24px']}
               fontSize={['14px', '14px', '18px', '20px']}
               my={['8px', '8px', '8px']}
               fontWeight="300"
-              bg="#303030"
+              bg={category === e.value ? '#F68A66' : '#303030'}
+              color={category === e.value ? '#303030' : '#fff'}
               size={['md', 'md', 'xl', '2xl']}
             >
               <Icon
-                color="#F68A66"
+                color={category === e.value ? '#303030' : '#F68A66'}
                 w={['24px', '24px', '24px', '32px']}
                 h={['24px', '24px', '24px', '32px']}
               >
@@ -90,12 +132,14 @@ export default function Home({ events }: EventsPageProps) {
           ))}
         </Flex>
         <Flex pt="32px" flexWrap="wrap">
-          {events?.map((e, i) => (
+          {data?.map((e, i) => (
             <Flex
               w={['100%', '50%', '50%', '25%']}
               px="16px"
               pb="32px"
-              onClick={() => navigate.push(`/event/${e._id}`)}
+              onClick={() => {
+                navigate.push(`/event/${e._id}`)
+              }}
             >
               <EventCard
                 key={i}
